@@ -4,7 +4,7 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 
-application.properties
+src/main/java/application.properties
 
 ### STS ###
 .apt_generated
