@@ -1,6 +1,8 @@
 package com.example.simeon.manga_ln_app.models;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 
@@ -9,11 +11,16 @@ import lombok.Data;
 @Table(name = "users")
 public class User {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @Column(unique = true)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    @Column(nullable = false)
+    @NotBlank
+    @Column(unique = true)
     private String username;
-    @Column(nullable = false)
+    @NotBlank
     private String password;
-    private Role roles;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    @NotNull
+    private Role role;
 }
