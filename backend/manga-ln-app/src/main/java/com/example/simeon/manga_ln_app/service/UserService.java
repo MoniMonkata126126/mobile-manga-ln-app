@@ -2,6 +2,7 @@ package com.example.simeon.manga_ln_app.service;
 
 import com.example.simeon.manga_ln_app.models.User;
 import com.example.simeon.manga_ln_app.repository.UserRepository;
+import com.example.simeon.manga_ln_app.dto.UserDTO;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
@@ -18,13 +19,22 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    public List<User> getUsers() {
-        return userRepository.findAll();
+    private UserDTO convertToDTO(User user) {
+        UserDTO dto = new UserDTO();
+        dto.setUsername(user.getUsername());
+        dto.setRole(user.getRole());
+        return dto;
     }
 
-    public User getById(@NotEmpty int id) {
-        return userRepository.findById(id)
-            .orElseThrow(() -> new IllegalArgumentException("User with id " + id + " does not exist!"));
+    public List<UserDTO> getUsers() {
+        return userRepository.findAll().stream()
+                .map(this::convertToDTO)
+                .toList();
+    }
+
+    public UserDTO getById(@NotEmpty int id) {
+        return convertToDTO(userRepository.findById(id)
+            .orElseThrow(() -> new IllegalArgumentException("User with id " + id + " does not exist!")));
     }
 
     public void addUser(@Valid User user) {
@@ -34,8 +44,8 @@ public class UserService {
         userRepository.save(user);
     }
 
-    public User getByUsername(@NotBlank String username) {
-        return userRepository.findByUsername(username)
-            .orElseThrow(() -> new IllegalArgumentException("User with username " + username + " does not exist!"));
+    public UserDTO getByUsername(@NotBlank String username) {
+        return convertToDTO(userRepository.findByUsername(username)
+            .orElseThrow(() -> new IllegalArgumentException("User with username " + username + " does not exist!")));
     }
 }

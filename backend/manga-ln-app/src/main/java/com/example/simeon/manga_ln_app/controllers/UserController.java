@@ -1,5 +1,6 @@
 package com.example.simeon.manga_ln_app.controllers;
 
+import com.example.simeon.manga_ln_app.dto.UserDTO;
 import com.example.simeon.manga_ln_app.models.User;
 import com.example.simeon.manga_ln_app.service.UserService;
 import jakarta.validation.Valid;
@@ -21,23 +22,24 @@ public class UserController {
     }
 
     @GetMapping()
-    public ResponseEntity<List<User>> getUsers(){
+    public ResponseEntity<List<UserDTO>> getUsers(){
         return new ResponseEntity<>(userService.getUsers(), HttpStatus.OK);
     }
 
     @GetMapping("/id/{id}")
-    public ResponseEntity<User> getUserById(@PathVariable int id){
+    public ResponseEntity<UserDTO> getUserById(@PathVariable int id){
         return new ResponseEntity<>(userService.getById(id), HttpStatus.OK);
     }
 
     @GetMapping("/username/{username}")
-    public ResponseEntity<User> getUserById(@PathVariable String username){
+    public ResponseEntity<UserDTO> getUserById(@PathVariable String username){
         return new ResponseEntity<>(userService.getByUsername(username), HttpStatus.OK);
     }
 
     @PostMapping()
-    public ResponseEntity<User> addUser(@Valid @RequestBody User user){
+    public ResponseEntity<UserDTO> addUser(@Valid @RequestBody User user){
         userService.addUser(user);
         return new ResponseEntity<>(userService.getByUsername(user.getUsername()), HttpStatus.OK);
     }
+
 }
