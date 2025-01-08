@@ -5,6 +5,8 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
+import java.util.List;
+
 
 @Data
 @Entity
@@ -23,4 +25,6 @@ public class User {
     @Column(nullable = false)
     @NotNull()
     private Role role;
+    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Comment> comments;
 }
