@@ -1,17 +1,33 @@
 package com.example.simeon.manga_ln_app.models;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import lombok.Data;
 
+@Data
+@Entity
+@Table(name = "comment")
 public class Comment {
     @Id
     @Column(unique = true)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
+    @NotEmpty
     @ManyToOne
-    @JoinColumn(name = "author_id")
     private User author;
+
+    @NotEmpty
     @ManyToOne
-    @JoinColumn(name = "chapter_id")
     private Chapter chapter;
-    private String content;
+
+    @NotBlank
+    private String text;
 }

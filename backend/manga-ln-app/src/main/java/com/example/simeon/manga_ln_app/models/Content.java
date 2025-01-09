@@ -6,10 +6,12 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Column;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.EnumType;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.FetchType;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.ManyToMany;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -19,24 +21,30 @@ import java.util.List;
 
 @Data
 @Entity
-@Table(name = "chapter")
-public class Chapter {
+@Table(name = "content")
+public class Content {
     @Id
     @Column(unique = true)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @NotNull
-    @OneToMany(mappedBy = "chapter",
-            cascade = CascadeType.ALL,
-            orphanRemoval = true,
-            fetch = FetchType.LAZY)
-    private List<Comment> comments;
-
     @NotEmpty
-    @ManyToOne
-    private Content content;
+    @Enumerated(EnumType.STRING)
+    @Column(columnDefinition = "content_type")
+    private ContentType contentType;
 
     @NotBlank
-    private String fileStorageChapterURL;
+    @Column(unique = true)
+    private String name;
+
+    @NotNull
+    @OneToMany(mappedBy = "content",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true,
+            fetch = FetchType.EAGER)
+    private List<Chapter> chapters;
+
+    @NotNull
+    @ManyToMany(mappedBy = "likedContent")
+    private List<User> userLikes;
 }
