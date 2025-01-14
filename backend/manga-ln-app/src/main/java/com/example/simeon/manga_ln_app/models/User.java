@@ -2,7 +2,6 @@ package com.example.simeon.manga_ln_app.models;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
@@ -25,10 +24,16 @@ public class User {
     @NotBlank
     private String password;
 
-    @NotEmpty
+    @NotNull
     @Enumerated(EnumType.STRING)
-    @Column(columnDefinition = "role")
     private Role role;
+
+    @NotNull
+    @OneToMany(mappedBy = "author",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true,
+            fetch = FetchType.LAZY)
+    private List<CommentBeta> pendingComments;
 
     @NotNull
     @OneToMany(mappedBy = "author",
@@ -44,4 +49,20 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "content_id")
     )
     private List<Content> likedContent;
+
+    @NotNull
+    @OneToMany(mappedBy = "author",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true,
+            fetch = FetchType.LAZY
+    )
+    private List<Content> createdWorks;
+
+    @NotNull
+    @OneToMany(mappedBy = "author",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true,
+            fetch = FetchType.LAZY
+    )
+    private List<ContentBeta> pendingWorks;
 }

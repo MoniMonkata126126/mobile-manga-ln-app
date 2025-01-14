@@ -1,17 +1,6 @@
 package com.example.simeon.manga_ln_app.models;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
-import jakarta.persistence.Id;
-import jakarta.persistence.Column;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.ManyToMany;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -28,14 +17,17 @@ public class Content {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @NotEmpty
+    @NotNull
     @Enumerated(EnumType.STRING)
-    @Column(columnDefinition = "content_type")
     private ContentType contentType;
 
     @NotBlank
     @Column(unique = true)
     private String name;
+
+    @NotNull
+    @ManyToOne
+    private User author;
 
     @NotNull
     @OneToMany(mappedBy = "content",
@@ -45,6 +37,23 @@ public class Content {
     private List<Chapter> chapters;
 
     @NotNull
+    @OneToMany(mappedBy = "content",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true,
+            fetch = FetchType.EAGER)
+    private List<ChapterBeta> chaptersBeta;
+
+    @NotNull
     @ManyToMany(mappedBy = "likedContent")
     private List<User> userLikes;
+
+    public Content(int id, String name, ContentType contentType, User author) {
+        this.id = id;
+        this.name = name;
+        this.contentType = contentType;
+        this.author = author;
+    }
+
+    public Content() {
+    }
 }

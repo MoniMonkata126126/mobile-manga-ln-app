@@ -1,6 +1,8 @@
 package com.example.simeon.manga_ln_app.controllers;
 
+import com.example.simeon.manga_ln_app.dto.CommentDTO;
 import com.example.simeon.manga_ln_app.dto.UserDTO;
+import com.example.simeon.manga_ln_app.models.CommentBeta;
 import com.example.simeon.manga_ln_app.models.User;
 import com.example.simeon.manga_ln_app.service.UserService;
 import jakarta.validation.Valid;
@@ -32,14 +34,30 @@ public class UserController {
     }
 
     @GetMapping("/username/{username}")
-    public ResponseEntity<UserDTO> getUserById(@PathVariable String username){
+    public ResponseEntity<UserDTO> getUserByUsername(@PathVariable String username){
         return new ResponseEntity<>(userService.getByUsername(username), HttpStatus.OK);
     }
 
     @PostMapping()
     public ResponseEntity<UserDTO> addUser(@Valid @RequestBody User user){
-        userService.addUser(user);
-        return new ResponseEntity<>(userService.getByUsername(user.getUsername()), HttpStatus.OK);
+        try {
+            userService.addUser(user);
+            return new ResponseEntity<>(userService.getByUsername(user.getUsername()), HttpStatus.OK);
+        } catch (Exception e) {
+            throw e;
+        }
     }
 
+    //TODO: TO BE REFACTORED AFTER SPRING SECURITY
+    @PostMapping("/comments")
+    public ResponseEntity<String> addComment(@Valid @RequestBody CommentBeta commentBeta){
+        userService.addComment(commentBeta);
+        return new ResponseEntity<>("Comment awaiting approval", HttpStatus.OK);
+    }
+
+    //TODO: TO BE ADDED AUTHORIZATION
+    @PostMapping("/comments/approve/{id}")
+    public ResponseEntity<CommentDTO> approveComment(@PathVariable int id){
+        return new ResponseEntity<>(userService.approveComment(id), HttpStatus.OK);
+    }
 }
