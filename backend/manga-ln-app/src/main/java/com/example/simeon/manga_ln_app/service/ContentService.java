@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.ArrayList;
+import java.util.Set;
 
 @Slf4j
 @Service
@@ -31,6 +32,10 @@ public class ContentService {
     private final ContentBetaRepository contentBetaRepository;
     private final ContentRepository contentRepository;
     private final UserRepository userRepository;
+
+    private static final Set<String> PARTICLES = Set.of(
+        "of", "in", "and", "the", "to", "a", "is", "on", "from", "at"
+    );
 
     public ContentService(ContentMapper contentMapper,
                           ContentBetaRepository contentBetaRepository,
@@ -77,37 +82,29 @@ public class ContentService {
         return contentMapper.convertToContentDTO(saved);
     }
 
-    //TODO: BIG CHANGES TO SORTING AND QUERYING LOGIC
+
+    @Transactional
     public List<ContentDTO> searchByQuery(String q) {
-        String decodedQuery = q.replace(" ", "+");
-        
-        List<String> keywords = Arrays.stream(decodedQuery.split("\\+"))
+        List<String> keywords = Arrays.stream(q.split("[+\\s_]+"))
                 .filter(keyword -> !keyword.trim().isEmpty())
+                .map(String::toLowerCase)
+                .filter(keyword -> !PARTICLES.contains(keyword))
                 .toList();
-                
         if (keywords.isEmpty()) {
             throw new IllegalArgumentException("Search query must not be empty!");
         }
-        
-        Map<Content, Integer> contentMatchCount = new HashMap<>();
-        for (String keyword : keywords) {
-            List<Content> matchingContent = contentRepository.findByNameContainingKeywordIgnoreCase(keyword);
-            for (Content content : matchingContent) {
-                log.info("Found matching content - ID: {}, Name: {}", content.getId(), content.getName());
-                contentMatchCount.merge(content, 1, Integer::sum);
-            }
-            log.info("Number of matches after keyword '{}': {}", keyword, contentMatchCount.size());
-        }
-        
-        if (contentMatchCount.isEmpty()) {
+
+        String keywordsString = String.join(",", keywords);
+        Optional<List<Content>> contentMatchOptional = contentRepository.findByKeywords(keywordsString, keywords.size() * 8 / 10);
+        List<Content> matches = contentMatchOptional.orElse(List.of());
+        if (matches.isEmpty()) {
             throw new DBSearchException("No content found for such query!");
         }
-        
-        return contentMatchCount.entrySet().stream()
-                .sorted(Map.Entry.<Content, Integer>comparingByValue().reversed())
+
+        return matches
+                .stream()
                 .limit(10)
-                .map(entry -> contentMapper.convertToContentDTO(entry.getKey()))
-                .distinct()
+                .map(contentMapper::convertToContentDTO)
                 .toList();
     }
 }
