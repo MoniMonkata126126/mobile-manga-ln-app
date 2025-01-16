@@ -46,14 +46,4 @@ public class Content {
     @NotNull
     @ManyToMany(mappedBy = "likedContent")
     private List<User> userLikes;
-
-    public Content(int id, String name, ContentType contentType, User author) {
-        this.id = id;
-        this.name = name;
-        this.contentType = contentType;
-        this.author = author;
-    }
-
-    public Content() {
-    }
 }

@@ -7,6 +7,7 @@ import com.example.simeon.manga_ln_app.exceptions.DBSearchException;
 import com.example.simeon.manga_ln_app.mapper.ContentMapper;
 import com.example.simeon.manga_ln_app.models.Content;
 import com.example.simeon.manga_ln_app.models.ContentBeta;
+import com.example.simeon.manga_ln_app.models.ContentType;
 import com.example.simeon.manga_ln_app.models.User;
 import com.example.simeon.manga_ln_app.repository.ContentBetaRepository;
 import com.example.simeon.manga_ln_app.repository.ContentRepository;
@@ -16,14 +17,8 @@ import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
-import java.util.ArrayList;
-import java.util.Set;
 
 @Slf4j
 @Service
@@ -104,6 +99,23 @@ public class ContentService {
         return matches
                 .stream()
                 .limit(10)
+                .map(contentMapper::convertToContentDTO)
+                .toList();
+    }
+
+    public List<ContentDTO> searchByType(String type) {
+        ContentType contentType;
+        try {
+            contentType = ContentType.valueOf(type);
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("Type must be either MANGA or LN!");
+        }
+        Optional<List<Content>> optionalContentList = contentRepository.findByContentType(contentType);
+        if (optionalContentList.isEmpty()){
+            throw new DBSearchException("Content with type " + type + " not found!");
+        }
+        return optionalContentList.get()
+                .stream()
                 .map(contentMapper::convertToContentDTO)
                 .toList();
     }

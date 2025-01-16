@@ -37,5 +37,8 @@ public class ContentController {
         return new ResponseEntity<>(contentService.searchByQuery(q), HttpStatus.OK);
     }
 
-    //TODO: SEARCH BY CONTENT TYPE
+    @GetMapping("/type")
+    public ResponseEntity<List<ContentDTO>> searchByType(@RequestParam String type){
+        return new ResponseEntity<>(contentService.searchByType(type), HttpStatus.OK);
+    }
 }
