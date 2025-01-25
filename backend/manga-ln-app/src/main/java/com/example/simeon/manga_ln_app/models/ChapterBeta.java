@@ -34,8 +34,6 @@ public class ChapterBeta {
 
     @NotNull
     @OneToMany(mappedBy = "chapterBeta",
-            cascade = CascadeType.ALL,
-            orphanRemoval = true,
-            fetch = FetchType.LAZY)
+            cascade = CascadeType.PERSIST)
     private List<ChapterContent> chapterContentList;
 }

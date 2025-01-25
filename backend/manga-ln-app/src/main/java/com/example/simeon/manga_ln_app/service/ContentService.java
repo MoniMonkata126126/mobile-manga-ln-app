@@ -18,7 +18,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -51,6 +50,9 @@ public class ContentService {
         }
         User user = userOptional.get();
         if(contentBetaRepository.findByName(contentInputDTO.getName()).isPresent()) {
+            throw new IllegalArgumentException("Content Beta with name: " + contentInputDTO.getName() + " already exists!");
+        }
+        if(contentRepository.findByName(contentInputDTO.getName()).isPresent()) {
             throw new IllegalArgumentException("Content with name: " + contentInputDTO.getName() + " already exists!");
         }
         ContentBeta contentBeta = contentMapper.convertToBetaFromInputDTO(contentInputDTO, user);
