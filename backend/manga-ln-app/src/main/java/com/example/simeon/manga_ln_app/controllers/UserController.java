@@ -1,6 +1,7 @@
 package com.example.simeon.manga_ln_app.controllers;
 
 import com.example.simeon.manga_ln_app.dto.CommentDTO;
+import com.example.simeon.manga_ln_app.dto.UserCredentialsDTO;
 import com.example.simeon.manga_ln_app.dto.UserDTO;
 import com.example.simeon.manga_ln_app.models.CommentBeta;
 import com.example.simeon.manga_ln_app.models.User;
@@ -39,13 +40,9 @@ public class UserController {
     }
 
     @PostMapping()
-    public ResponseEntity<UserDTO> addUser(@Valid @RequestBody User user){
-        try {
-            userService.addUser(user);
-            return new ResponseEntity<>(userService.getByUsername(user.getUsername()), HttpStatus.OK);
-        } catch (Exception e) {
-            throw e;
-        }
+    public ResponseEntity<UserDTO> addUser(@Valid @RequestBody UserCredentialsDTO userCredentialsDTO){
+        userService.addUser(userCredentialsDTO);
+        return new ResponseEntity<>(userService.getByUsername(userCredentialsDTO.getUsername()), HttpStatus.OK);
     }
 
     //TODO: TO BE REFACTORED AFTER SPRING SECURITY

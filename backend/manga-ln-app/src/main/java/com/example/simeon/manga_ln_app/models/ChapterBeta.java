@@ -11,7 +11,6 @@ import jakarta.persistence.CascadeType;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
@@ -29,10 +28,14 @@ public class ChapterBeta {
     @NotBlank
     private String name;
 
-    @NotEmpty
+    @NotNull
     @ManyToOne
     private Content content;
 
-    @NotBlank
-    private String fileStorageChapterURL;
+    @NotNull
+    @OneToMany(mappedBy = "chapterBeta",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true,
+            fetch = FetchType.LAZY)
+    private List<ChapterContent> chapterContentList;
 }

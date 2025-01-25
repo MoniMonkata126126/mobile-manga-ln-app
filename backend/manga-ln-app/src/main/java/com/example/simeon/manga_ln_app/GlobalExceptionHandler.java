@@ -1,6 +1,7 @@
 package com.example.simeon.manga_ln_app;
 
 import com.example.simeon.manga_ln_app.exceptions.DBSearchException;
+import com.example.simeon.manga_ln_app.exceptions.SendRequestException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -20,6 +21,11 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(DBSearchException.class)
     public ResponseEntity<String> handleDBSearchException(DBSearchException ex){
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(SendRequestException.class)
+    public ResponseEntity<String> handleSendRequestException(SendRequestException ex){
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 

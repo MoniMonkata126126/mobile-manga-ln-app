@@ -39,6 +39,10 @@ public class Chapter {
     @ManyToOne
     private Content content;
 
-    @NotBlank
-    private String fileStorageChapterURL;
+    @NotNull
+    @OneToMany(mappedBy = "chapter",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true,
+            fetch = FetchType.LAZY)
+    private List<ChapterContent> chapterContentList;
 }

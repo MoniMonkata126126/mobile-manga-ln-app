@@ -1,8 +1,9 @@
 package com.example.simeon.manga_ln_app.service;
 
 import com.example.simeon.manga_ln_app.dto.CommentDTO;
+import com.example.simeon.manga_ln_app.dto.UserCredentialsDTO;
 import com.example.simeon.manga_ln_app.exceptions.DBSearchException;
-import com.example.simeon.manga_ln_app.mapper.ContentMapper;
+import com.example.simeon.manga_ln_app.mapper.UserMapper;
 import com.example.simeon.manga_ln_app.models.CommentBeta;
 import com.example.simeon.manga_ln_app.models.User;
 import com.example.simeon.manga_ln_app.repository.CommentBetaRepository;
@@ -24,53 +25,50 @@ public class UserService {
     private final CommentBetaRepository commentBetaRepository;
     private final CommentRepository commentRepository;
     private final CommentService commentService;
-    private final ContentMapper contentMapper;
+    private final UserMapper userMapper;
 
     public UserService(UserRepository userRepository,
                        CommentService commentService,
-                       ContentMapper contentMapper,
                        CommentBetaRepository commentBetaRepository,
-                       CommentRepository commentRepository) {
+                       CommentRepository commentRepository, UserMapper userMapper) {
         this.userRepository = userRepository;
         this.commentService = commentService;
-        this.contentMapper = contentMapper;
         this.commentBetaRepository = commentBetaRepository;
         this.commentRepository = commentRepository;
-    }
-
-    private UserDTO convertToDTO(User user) {
-        UserDTO dto = new UserDTO();
-        dto.setUsername(user.getUsername());
-        dto.setRole(user.getRole());
-        dto.setComments(commentService.convertToDTOList(user.getComments()));
-        dto.setAuthoredContent(contentMapper.convertToDTOList(user.getCreatedWorks()));
-        return dto;
+        this.userMapper = userMapper;
     }
 
     @Transactional
     public List<UserDTO> getUsers() {
         return userRepository.findAll().stream()
-                .map(this::convertToDTO)
+                .map(userMapper::convertToDTO)
                 .toList();
     }
 
     @Transactional
     public UserDTO getById(@NotEmpty int id) {
-        return convertToDTO(userRepository.findById(id)
+        return userMapper.convertToDTO(userRepository.findById(id)
             .orElseThrow(() -> new IllegalArgumentException("User with id " + id + " does not exist!")));
     }
 
     @Transactional
-    public void addUser(@Valid User user) {
-        if (userRepository.findByUsername(user.getUsername()).isPresent()) {
-            throw new IllegalArgumentException("User with username " + user.getUsername() + " already exists!");
+    public void addUser(@Valid UserCredentialsDTO userCredentialsDTO) {
+        if (userRepository.findByUsername(userCredentialsDTO.getUsername()).isPresent()) {
+            throw new IllegalArgumentException("User with username " + userCredentialsDTO.getUsername() + " already exists!");
         }
+        User user = userMapper.convertCredentialsToUser(userCredentialsDTO);
         userRepository.save(user);
+    }
+
+    public UserCredentialsDTO getCredentials(String username){
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new IllegalArgumentException("User with username: " + username + " not found!"));
+        return userMapper.convertUserToCredentials(user);
     }
 
     @Transactional
     public UserDTO getByUsername(@NotBlank String username) {
-        return convertToDTO(userRepository.findByUsername(username)
+        return userMapper.convertToDTO(userRepository.findByUsername(username)
             .orElseThrow(() -> new IllegalArgumentException("User with username " + username + " does not exist!")));
     }
 

@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class BaseController {
 
-    @GetMapping()
+    @GetMapping("/")
     public String hello(){
         return "hello this manga and ln app! \n " +
                 "Go to /users to interact with users \n " +
