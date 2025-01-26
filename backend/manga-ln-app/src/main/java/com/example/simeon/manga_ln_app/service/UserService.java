@@ -71,23 +71,4 @@ public class UserService {
         return userMapper.convertToDTO(userRepository.findByUsername(username)
             .orElseThrow(() -> new IllegalArgumentException("User with username " + username + " does not exist!")));
     }
-
-    @Transactional
-    public void addComment(@Valid CommentBeta commentBeta) {
-        if (!userRepository.existsByUsername(commentBeta.getAuthor().getUsername()).orElse(false)) {
-            throw new IllegalArgumentException("User with username "
-                    + commentBeta.getAuthor().getUsername() +
-                    " does not exist!");
-        }
-        commentBetaRepository.save(commentBeta);
-    }
-
-
-    @Transactional
-    public CommentDTO approveComment(int id) {
-        CommentBeta commentBeta = commentBetaRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Comment with " + id + " does not exist!"));
-        commentRepository.save(commentService.convertFromBeta(commentBeta));
-        commentBetaRepository.deleteById(id);
-        return commentRepository.findByText(commentBeta.getText()).orElseThrow(() -> new DBSearchException("Comment not found!"));
-    }
 }

@@ -44,17 +44,4 @@ public class UserController {
         userService.addUser(userCredentialsDTO);
         return new ResponseEntity<>(userService.getByUsername(userCredentialsDTO.getUsername()), HttpStatus.OK);
     }
-
-    //TODO: TO BE REFACTORED AFTER SPRING SECURITY
-    @PostMapping("/comments")
-    public ResponseEntity<String> addComment(@Valid @RequestBody CommentBeta commentBeta){
-        userService.addComment(commentBeta);
-        return new ResponseEntity<>("Comment awaiting approval", HttpStatus.OK);
-    }
-
-    //TODO: TO BE ADDED AUTHORIZATION
-    @PostMapping("/comments/approve/{id}")
-    public ResponseEntity<CommentDTO> approveComment(@PathVariable int id){
-        return new ResponseEntity<>(userService.approveComment(id), HttpStatus.OK);
-    }
 }

@@ -3,18 +3,17 @@ package com.example.simeon.manga_ln_app.mapper;
 import com.example.simeon.manga_ln_app.dto.UserCredentialsDTO;
 import com.example.simeon.manga_ln_app.dto.UserDTO;
 import com.example.simeon.manga_ln_app.models.User;
-import com.example.simeon.manga_ln_app.service.CommentService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 public class UserMapper {
-    private final CommentService commentService;
+    private final CommentMapper commentMapper;
     private final ContentMapper contentMapper;
 
-    public UserMapper(CommentService commentService, ContentMapper contentMapper) {
-        this.commentService = commentService;
+    public UserMapper(CommentMapper commentMapper, ContentMapper contentMapper) {
+        this.commentMapper = commentMapper;
         this.contentMapper = contentMapper;
     }
 
@@ -35,7 +34,7 @@ public class UserMapper {
         UserDTO dto = new UserDTO();
         dto.setUsername(user.getUsername());
         dto.setRole(user.getRole());
-        dto.setComments(commentService.convertToDTOList(user.getComments()));
+        dto.setComments(commentMapper.convertToDTOList(user.getComments()));
         dto.setAuthoredContent(contentMapper.convertToDTOList(user.getCreatedWorks()));
         return dto;
     }
