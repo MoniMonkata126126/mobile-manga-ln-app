@@ -1,13 +1,8 @@
 package com.example.simeon.manga_ln_app.service;
 
-import com.example.simeon.manga_ln_app.dto.CommentDTO;
 import com.example.simeon.manga_ln_app.dto.UserCredentialsDTO;
-import com.example.simeon.manga_ln_app.exceptions.DBSearchException;
 import com.example.simeon.manga_ln_app.mapper.UserMapper;
-import com.example.simeon.manga_ln_app.models.CommentBeta;
 import com.example.simeon.manga_ln_app.models.User;
-import com.example.simeon.manga_ln_app.repository.CommentBetaRepository;
-import com.example.simeon.manga_ln_app.repository.CommentRepository;
 import com.example.simeon.manga_ln_app.repository.UserRepository;
 import com.example.simeon.manga_ln_app.dto.UserDTO;
 import jakarta.transaction.Transactional;
@@ -22,19 +17,11 @@ import java.util.List;
 public class UserService {
 
     private final UserRepository userRepository;
-    private final CommentBetaRepository commentBetaRepository;
-    private final CommentRepository commentRepository;
-    private final CommentService commentService;
     private final UserMapper userMapper;
 
     public UserService(UserRepository userRepository,
-                       CommentService commentService,
-                       CommentBetaRepository commentBetaRepository,
-                       CommentRepository commentRepository, UserMapper userMapper) {
+                       UserMapper userMapper) {
         this.userRepository = userRepository;
-        this.commentService = commentService;
-        this.commentBetaRepository = commentBetaRepository;
-        this.commentRepository = commentRepository;
         this.userMapper = userMapper;
     }
 

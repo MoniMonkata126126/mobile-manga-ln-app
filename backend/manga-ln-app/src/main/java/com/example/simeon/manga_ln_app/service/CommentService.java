@@ -2,7 +2,6 @@ package com.example.simeon.manga_ln_app.service;
 
 import com.example.simeon.manga_ln_app.dto.CommentBetaDTO;
 import com.example.simeon.manga_ln_app.dto.CommentDTO;
-import com.example.simeon.manga_ln_app.exceptions.DBSearchException;
 import com.example.simeon.manga_ln_app.mapper.CommentMapper;
 import com.example.simeon.manga_ln_app.models.Chapter;
 import com.example.simeon.manga_ln_app.models.CommentBeta;

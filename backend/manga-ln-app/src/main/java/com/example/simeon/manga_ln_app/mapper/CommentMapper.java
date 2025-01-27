@@ -6,7 +6,6 @@ import com.example.simeon.manga_ln_app.models.Chapter;
 import com.example.simeon.manga_ln_app.models.Comment;
 import com.example.simeon.manga_ln_app.models.CommentBeta;
 import com.example.simeon.manga_ln_app.models.User;
-import jakarta.validation.Valid;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;

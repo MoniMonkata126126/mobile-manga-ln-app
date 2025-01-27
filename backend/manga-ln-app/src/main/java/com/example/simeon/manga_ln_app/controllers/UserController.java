@@ -1,10 +1,7 @@
 package com.example.simeon.manga_ln_app.controllers;
 
-import com.example.simeon.manga_ln_app.dto.CommentDTO;
 import com.example.simeon.manga_ln_app.dto.UserCredentialsDTO;
 import com.example.simeon.manga_ln_app.dto.UserDTO;
-import com.example.simeon.manga_ln_app.models.CommentBeta;
-import com.example.simeon.manga_ln_app.models.User;
 import com.example.simeon.manga_ln_app.service.UserService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
