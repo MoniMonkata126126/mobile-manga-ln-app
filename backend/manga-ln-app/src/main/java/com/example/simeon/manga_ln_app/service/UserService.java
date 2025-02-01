@@ -52,13 +52,13 @@ public class UserService {
     }
 
     @Transactional
-    public UserDTO addUser(@Valid UserCredentialsDTO userCredentialsDTO) {
+    public String addUser(@Valid UserCredentialsDTO userCredentialsDTO) {
         if (userRepository.findByUsername(userCredentialsDTO.getUsername()).isPresent()) {
             throw new IllegalArgumentException("User with username " + userCredentialsDTO.getUsername() + " already exists!");
         }
         User user = userMapper.convertCredentialsToUser(userCredentialsDTO);
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-        return userMapper.convertToDTO(userRepository.save(user));
+        return jwtService.generateToken(userRepository.save(user).getUsername());
     }
 
     @Transactional

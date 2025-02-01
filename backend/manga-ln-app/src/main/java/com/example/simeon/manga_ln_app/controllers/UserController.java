@@ -39,13 +39,13 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<UserDTO> addUser(@Valid @RequestBody UserCredentialsDTO userCredentialsDTO){
+    public ResponseEntity<String> addUser(@Valid @RequestBody UserCredentialsDTO userCredentialsDTO){
         return new ResponseEntity<>(userService.addUser(userCredentialsDTO), HttpStatus.OK);
     }
 
     @PostMapping("/login")
-    public String login(@RequestBody UserCredentialsDTO userCredentialsDTO) throws CredentialNotFoundException {
-        return userService.verify(userCredentialsDTO);
+    public ResponseEntity<String> login(@RequestBody UserCredentialsDTO userCredentialsDTO) throws CredentialNotFoundException {
+        return new ResponseEntity<>(userService.verify(userCredentialsDTO), HttpStatus.OK);
     }
 
     @PutMapping("/role/{username}")
