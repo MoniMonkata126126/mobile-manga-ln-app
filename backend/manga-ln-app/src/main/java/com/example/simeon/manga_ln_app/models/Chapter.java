@@ -45,4 +45,7 @@ public class Chapter {
             orphanRemoval = true,
             fetch = FetchType.LAZY)
     private List<ChapterContent> chapterContentList;
+
+    @NotNull
+    private int chapterContentsCount;
 }

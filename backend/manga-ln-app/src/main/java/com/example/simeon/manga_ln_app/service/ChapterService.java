@@ -96,9 +96,10 @@ public class ChapterService {
         chapterBeta.setName(chapterName);
         chapterBeta.setChapterContentList(new ArrayList<>());
 
-        int fileOrderCount = 1;
+        int fileOrderCount = 0;
 
         for (MultipartFile file : multipartFiles) {
+            fileOrderCount++;
             HttpHeaders headers = new HttpHeaders();
             headers.add("Authorization", "Bearer " + this.apiKey);
             headers.add("Content-Type", file.getContentType());
@@ -119,9 +120,9 @@ public class ChapterService {
             chapterContent.setContentURL(uploadURL);
             chapterContent.setDisplayOrder(fileOrderCount);
             chapterBeta.getChapterContentList().add(chapterContent);
-            fileOrderCount++;
         }
 
+        chapterBeta.setChapterContentsCount(fileOrderCount);
         this.chapterBetaRepository.save(chapterBeta);
 
         return ResponseEntity.ok(responseMessage.toString());
@@ -136,15 +137,16 @@ public class ChapterService {
                         )
                 );
 
-        Optional<List<Chapter>> optionalChapterList = chapterRepository.findByName(chapterBeta.getName());
-        if(optionalChapterList.isPresent()){
-            List<Chapter> chapterList = optionalChapterList.get();
-            for(Chapter chapter : chapterList){
-                if(chapter.getContent().getName().equals(chapterBeta.getContent().getName()))
-                    throw new IllegalArgumentException(
-                            "Chapter with name: " + chapterBeta.getName() + " already exists and approved!"
-                    );
-            }
+        List<Chapter> chapterList = chapterRepository.findByName(chapterBeta.getName())
+                .orElseThrow(() -> new IllegalArgumentException(
+                        "Chapters with name: " + chapterBeta.getName() + " not found!"
+                ));
+
+        for(Chapter chapter : chapterList){
+            if(chapter.getContent().getName().equals(chapterBeta.getContent().getName()))
+                throw new IllegalArgumentException(
+                        "Chapter with name: " + chapterBeta.getName() + " already exists and approved!"
+                );
         }
 
         Chapter chapter = chapterMapper.convertBetaToChapter(chapterBeta);

@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.security.auth.login.CredentialNotFoundException;
 import java.util.List;
 
 @Slf4j
@@ -43,7 +44,7 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public String login(@RequestBody UserCredentialsDTO userCredentialsDTO){
+    public String login(@RequestBody UserCredentialsDTO userCredentialsDTO) throws CredentialNotFoundException {
         return userService.verify(userCredentialsDTO);
     }
 

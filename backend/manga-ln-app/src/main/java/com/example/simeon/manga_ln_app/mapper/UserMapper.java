@@ -2,6 +2,7 @@ package com.example.simeon.manga_ln_app.mapper;
 
 import com.example.simeon.manga_ln_app.dto.UserCredentialsDTO;
 import com.example.simeon.manga_ln_app.dto.UserDTO;
+import com.example.simeon.manga_ln_app.models.Role;
 import com.example.simeon.manga_ln_app.models.User;
 import org.springframework.stereotype.Service;
 
@@ -21,7 +22,7 @@ public class UserMapper {
         User user = new User();
         user.setUsername(userCredentialsDTO.getUsername());
         user.setPassword(userCredentialsDTO.getPassword());
-        user.setRole(userCredentialsDTO.getRole());
+        user.setRole(Role.READER);
         user.setComments(List.of());
         user.setCreatedWorks(List.of());
         user.setLikedContent(List.of());
@@ -37,13 +38,5 @@ public class UserMapper {
         dto.setComments(commentMapper.convertToDTOList(user.getComments()));
         dto.setAuthoredContent(contentMapper.convertToDTOList(user.getCreatedWorks()));
         return dto;
-    }
-
-    public UserCredentialsDTO convertUserToCredentials(User user) {
-        UserCredentialsDTO userCredentialsDTO = new UserCredentialsDTO();
-        userCredentialsDTO.setUsername(user.getUsername());
-        userCredentialsDTO.setPassword(user.getPassword());
-        userCredentialsDTO.setRole(user.getRole());
-        return userCredentialsDTO;
     }
 }

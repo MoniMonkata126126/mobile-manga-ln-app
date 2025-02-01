@@ -11,6 +11,4 @@ public class UserCredentialsDTO {
     private String username;
     @NotBlank
     private String password;
-    @NotNull
-    private Role role;
 }

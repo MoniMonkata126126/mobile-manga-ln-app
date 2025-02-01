@@ -31,6 +31,7 @@ public class ChapterMapper {
 
         chapter.setContent(chapterBeta.getContent());
         chapter.setComments(List.of());
+        chapter.setChapterContentsCount(chapterBeta.getChapterContentsCount());
         return chapter;
     }
 }

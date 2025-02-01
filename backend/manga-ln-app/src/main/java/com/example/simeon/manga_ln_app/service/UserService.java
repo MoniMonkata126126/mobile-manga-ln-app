@@ -16,6 +16,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.security.auth.login.CredentialNotFoundException;
 import java.util.List;
 
 @Service
@@ -60,19 +61,13 @@ public class UserService {
         return userMapper.convertToDTO(userRepository.save(user));
     }
 
-    public UserCredentialsDTO getCredentials(String username){
-        User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new IllegalArgumentException("User with username: " + username + " not found!"));
-        return userMapper.convertUserToCredentials(user);
-    }
-
     @Transactional
     public UserDTO getByUsername(@NotBlank String username) {
         return userMapper.convertToDTO(userRepository.findByUsername(username)
             .orElseThrow(() -> new IllegalArgumentException("User with username " + username + " does not exist!")));
     }
 
-    public String verify(UserCredentialsDTO userCredentialsDTO) {
+    public String verify(UserCredentialsDTO userCredentialsDTO) throws CredentialNotFoundException {
         Authentication authentication =
                 authenticationManager.authenticate(
                         new UsernamePasswordAuthenticationToken(
@@ -83,7 +78,7 @@ public class UserService {
         if(authentication.isAuthenticated()){
             return jwtService.generateToken(userCredentialsDTO.getUsername());
         }
-        return "Invalid credentials!";
+        throw new CredentialNotFoundException("Invalid credentials!");
     }
 
     @Transactional

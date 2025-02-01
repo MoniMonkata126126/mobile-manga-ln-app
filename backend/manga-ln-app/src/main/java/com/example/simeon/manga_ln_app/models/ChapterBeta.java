@@ -35,4 +35,7 @@ public class ChapterBeta {
     @OneToMany(mappedBy = "chapterBeta",
             cascade = CascadeType.PERSIST)
     private List<ChapterContent> chapterContentList;
+
+    @NotNull
+    private int chapterContentsCount;
 }
