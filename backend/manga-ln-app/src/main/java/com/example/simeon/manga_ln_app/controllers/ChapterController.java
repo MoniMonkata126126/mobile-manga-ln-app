@@ -15,7 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 @RestController
-@RequestMapping("/chapters")
+@RequestMapping("/chapter")
 public class ChapterController {
 
     private final ChapterService chapterService;
