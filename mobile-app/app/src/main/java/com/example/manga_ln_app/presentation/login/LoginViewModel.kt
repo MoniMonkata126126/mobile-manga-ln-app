@@ -17,21 +17,18 @@ class LoginViewModel @Inject constructor(
     private val _state = MutableStateFlow(LoginState())
     val state = _state.asStateFlow()
 
-    private val _isLoggedIn = MutableStateFlow(false)
-    val isLoggedIn = _isLoggedIn.asStateFlow()
-
-    fun onEvent(event: LoginEvent) {
-        when (event) {
-            is LoginEvent.UsernameChanged -> {
-                _state.update { it.copy(username = event.username) }
+    fun onAction(action: LoginAction) {
+        when (action) {
+            is LoginAction.OnPasswordChange -> {
+                _state.update { it.copy(password = action.password) }
             }
-            is LoginEvent.PasswordChanged -> {
-                _state.update { it.copy(password = event.password) }
+            is LoginAction.OnUsernameChange -> {
+                _state.update { it.copy(username = action.username) }
             }
-            LoginEvent.LoginClicked -> {
+            LoginAction.OnLogin -> {
                 login()
             }
-            LoginEvent.RegisterClicked -> {
+            LoginAction.OnRegister -> {
                 register()
             }
         }
@@ -40,12 +37,17 @@ class LoginViewModel @Inject constructor(
     private fun login() {
         viewModelScope.launch {
             _state.update { it.copy(isLoading = true, error = null) }
-            val result = loginUseCase(state.value.username, state.value.password)
-            _state.update { it.copy(isLoading = false) }
-            result.onSuccess {
-                _isLoggedIn.value = true
-            }.onFailure { error ->
-                _state.update { it.copy(error = error.message) }
+            try {
+                val result = loginUseCase(state.value.username, state.value.password)
+                result.onSuccess {
+                    _state.update { it.copy(isLoading = false, isLoggedIn = true) }
+                }.onFailure { error ->
+                    println("Login failure: ${error.message}")
+                    _state.update { it.copy(isLoading = false, error = error.message) }
+                }
+            } catch (e: Exception) {
+                println("Login exception: ${e.message}")
+                _state.update { it.copy(isLoading = false, error = e.message) }
             }
         }
     }
@@ -54,11 +56,10 @@ class LoginViewModel @Inject constructor(
         viewModelScope.launch {
             _state.update { it.copy(isLoading = true, error = null) }
             val result = registerUseCase(state.value.username, state.value.password)
-            _state.update { it.copy(isLoading = false) }
             result.onSuccess {
-                _isLoggedIn.value = true
+                _state.update { it.copy(isLoading = false, isLoggedIn = true) }
             }.onFailure { error ->
-                _state.update { it.copy(error = error.message) }
+                _state.update { it.copy(isLoading = false, error = error.message) }
             }
         }
     }

@@ -1,22 +1,28 @@
 package com.example.manga_ln_app.data.repository
 
-import com.example.manga_ln_app.data.local.TokenManager
 import com.example.manga_ln_app.data.remote.AuthApi
 import com.example.manga_ln_app.domain.repository.AuthRepository
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
+import com.example.manga_ln_app.domain.repository.CredentialsStorage
 import javax.inject.Inject
 
 class AuthRepositoryImpl @Inject constructor(
     private val api: AuthApi,
-    private val tokenManager: TokenManager
+    private val credStorage: CredentialsStorage
 ) : AuthRepository {
     override suspend fun login(username: String, password: String): Result<Unit> {
         return try {
             val response = api.login(username, password)
-            tokenManager.saveToken(response.token)
-            Result.success(Unit)
+            println("Login response token: ${response.token}")
+            if (response.token.isBlank() || response.token == "null token") {
+                Result.failure(Exception("Invalid token received"))
+            } else {
+                credStorage.saveUsername(response.username)
+                credStorage.saveRole(response.role)
+                credStorage.saveToken(response.token)
+                Result.success(Unit)
+            }
         } catch (e: Exception) {
+            println("Login error: ${e.message}")
             Result.failure(e)
         }
     }
@@ -24,14 +30,17 @@ class AuthRepositoryImpl @Inject constructor(
     override suspend fun register(username: String, password: String): Result<Unit> {
         return try {
             val response = api.register(username, password)
-            tokenManager.saveToken(response.token)
-            Result.success(Unit)
+            if (response.token.isBlank() || response.token == "null token") {
+                Result.failure(Exception("Invalid token received"))
+            } else {
+                credStorage.saveUsername(response.username)
+                credStorage.saveRole(response.role)
+                credStorage.saveToken(response.token)
+                Result.success(Unit)
+            }
         } catch (e: Exception) {
+            println("Register error: ${e.message}")
             Result.failure(e)
         }
     }
-
-    override fun isLoggedIn(): Flow<Boolean> {
-        return tokenManager.getToken().map { it != null }
-    }
-} 
+}

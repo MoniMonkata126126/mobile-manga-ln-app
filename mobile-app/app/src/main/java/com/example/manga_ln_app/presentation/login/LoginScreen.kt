@@ -1,31 +1,53 @@
 package com.example.manga_ln_app.presentation.login
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 
 @Composable
-fun LoginScreen(
-    modifier: Modifier = Modifier,
+fun LoginScreenRoot(
     viewModel: LoginViewModel = hiltViewModel(),
-    onLoggedIn: () -> Unit
-) {
-    val state by viewModel.state.collectAsState()
-    val isLoggedIn by viewModel.isLoggedIn.collectAsState()
+    onAuthSelf: () -> Unit,
+    onError: () -> Unit
+){
+    val state by viewModel.state.collectAsStateWithLifecycle()
 
-    LaunchedEffect(isLoggedIn) {
-        if (isLoggedIn) {
-            onLoggedIn()
+    LaunchedEffect(state.isLoggedIn) {
+        if (state.isLoggedIn) {
+            onAuthSelf()
         }
     }
 
+    LoginScreen(
+        state = state,
+        onAction = { action ->
+            viewModel.onAction(action)
+        },
+        onError = onError
+    )
+}
+
+
+@Composable
+fun LoginScreen(
+    state: LoginState,
+    onAction: (LoginAction) -> Unit,
+    onError: () -> Unit
+) {
+
     Column(
-        modifier = modifier
+        modifier = Modifier
             .fillMaxSize()
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -33,7 +55,7 @@ fun LoginScreen(
     ) {
         OutlinedTextField(
             value = state.username,
-            onValueChange = { viewModel.onEvent(LoginEvent.UsernameChanged(it)) },
+            onValueChange = { onAction(LoginAction.OnUsernameChange(it)) },
             label = { Text("Username") },
             modifier = Modifier.fillMaxWidth()
         )
@@ -42,7 +64,7 @@ fun LoginScreen(
 
         OutlinedTextField(
             value = state.password,
-            onValueChange = { viewModel.onEvent(LoginEvent.PasswordChanged(it)) },
+            onValueChange = { onAction(LoginAction.OnPasswordChange(it)) },
             label = { Text("Password") },
             visualTransformation = PasswordVisualTransformation(),
             modifier = Modifier.fillMaxWidth()
@@ -55,14 +77,14 @@ fun LoginScreen(
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
             Button(
-                onClick = { viewModel.onEvent(LoginEvent.LoginClicked) },
+                onClick = { onAction(LoginAction.OnLogin) },
                 enabled = !state.isLoading
             ) {
                 Text("Login")
             }
 
             Button(
-                onClick = { viewModel.onEvent(LoginEvent.RegisterClicked) },
+                onClick = { onAction(LoginAction.OnRegister) },
                 enabled = !state.isLoading
             ) {
                 Text("Register")
@@ -76,11 +98,27 @@ fun LoginScreen(
         }
 
         state.error?.let { error ->
-            Text(
-                text = error,
-                color = MaterialTheme.colorScheme.error,
-                modifier = Modifier.padding(top = 8.dp)
-            )
+            Dialog(
+                onDismissRequest = { onError() }
+            ) {
+                Box(
+                    modifier = Modifier
+                        .widthIn(150.dp, 350.dp)
+                        .heightIn(75.dp, 500.dp)
+                        .clip(shape = RoundedCornerShape(15.dp))
+                        .background(Color.White)
+                        .padding(16.dp)
+
+                ){
+                    Text(
+                        text = error,
+                        color = MaterialTheme.colorScheme.error,
+                        modifier = Modifier
+                            .wrapContentHeight()
+                    )
+                }
+            }
+
         }
     }
-} 
+}
