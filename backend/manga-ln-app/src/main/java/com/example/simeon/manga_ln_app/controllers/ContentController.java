@@ -1,5 +1,6 @@
 package com.example.simeon.manga_ln_app.controllers;
 
+import com.example.simeon.manga_ln_app.dto.ChapterInfoDTO;
 import com.example.simeon.manga_ln_app.dto.ContentInputDTO;
 import com.example.simeon.manga_ln_app.dto.ContentBetaDTO;
 import com.example.simeon.manga_ln_app.dto.ContentDTO;
@@ -37,12 +38,17 @@ public class ContentController {
     }
 
     @GetMapping()
-    public ResponseEntity<List<ContentDTO>> searchContentByQuery(@RequestParam String q){
-        return new ResponseEntity<>(contentService.searchByQuery(q), HttpStatus.OK);
+    public ResponseEntity<List<ContentDTO>> searchContentByQuery(@RequestParam String q, @RequestParam String type){
+        return new ResponseEntity<>(contentService.searchByQuery(q, type), HttpStatus.OK);
     }
 
     @GetMapping("/type")
     public ResponseEntity<List<ContentDTO>> searchByType(@RequestParam String type){
         return new ResponseEntity<>(contentService.searchByType(type), HttpStatus.OK);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<List<ChapterInfoDTO>> getChaptersPerContent(@PathVariable int id){
+        return new ResponseEntity<>(contentService.getAllChaptersForContent(id), HttpStatus.OK);
     }
 }

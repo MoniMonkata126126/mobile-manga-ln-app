@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.security.auth.login.CredentialNotFoundException;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @RestController
@@ -44,7 +45,7 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody UserCredentialsDTO userCredentialsDTO) throws CredentialNotFoundException {
+    public ResponseEntity<Map<String, String>> login(@RequestBody UserCredentialsDTO userCredentialsDTO) throws CredentialNotFoundException {
         return new ResponseEntity<>(userService.verify(userCredentialsDTO), HttpStatus.OK);
     }
 

@@ -1,14 +1,13 @@
 package com.example.simeon.manga_ln_app.service;
 
+import com.example.simeon.manga_ln_app.dto.ChapterInfoDTO;
 import com.example.simeon.manga_ln_app.dto.ContentInputDTO;
 import com.example.simeon.manga_ln_app.dto.ContentBetaDTO;
 import com.example.simeon.manga_ln_app.dto.ContentDTO;
 import com.example.simeon.manga_ln_app.exceptions.DBSearchException;
+import com.example.simeon.manga_ln_app.mapper.ChapterMapper;
 import com.example.simeon.manga_ln_app.mapper.ContentMapper;
-import com.example.simeon.manga_ln_app.models.Content;
-import com.example.simeon.manga_ln_app.models.ContentBeta;
-import com.example.simeon.manga_ln_app.models.ContentType;
-import com.example.simeon.manga_ln_app.models.User;
+import com.example.simeon.manga_ln_app.models.*;
 import com.example.simeon.manga_ln_app.repository.ContentBetaRepository;
 import com.example.simeon.manga_ln_app.repository.ContentRepository;
 import com.example.simeon.manga_ln_app.repository.UserRepository;
@@ -84,7 +83,7 @@ public class ContentService {
 
 
     @Transactional
-    public List<ContentDTO> searchByQuery(String q) {
+    public List<ContentDTO> searchByQuery(String q, String type) {
         List<String> keywords = Arrays.stream(q.split("[+\\s_]+"))
                 .filter(keyword -> !keyword.trim().isEmpty())
                 .map(String::toLowerCase)
@@ -103,6 +102,9 @@ public class ContentService {
 
         return matches
                 .stream()
+                .filter(content ->
+                    content.getContentType().name().equals(type)
+                )
                 .limit(10)
                 .map(contentMapper::convertToContentDTO)
                 .toList();
@@ -123,5 +125,17 @@ public class ContentService {
                 .stream()
                 .map(contentMapper::convertToContentDTO)
                 .toList();
+    }
+
+    @Transactional
+    public List<ChapterInfoDTO> getAllChaptersForContent(int id) {
+        Content content = contentRepository.findById(id)
+                .orElseThrow(
+                        () -> new IllegalArgumentException(
+                                "Content with id: " + id + " not found!"
+                        )
+                );
+        List<Chapter> chapterList = content.getChapters();
+        return chapterList.stream().map(ChapterMapper::convertChapterToInfoDTO).toList();
     }
 }

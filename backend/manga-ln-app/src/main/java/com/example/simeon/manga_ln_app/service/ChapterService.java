@@ -1,6 +1,7 @@
 package com.example.simeon.manga_ln_app.service;
 
 import com.example.simeon.manga_ln_app.dto.ChapterDTO;
+import com.example.simeon.manga_ln_app.dto.ChapterInfoDTO;
 import com.example.simeon.manga_ln_app.exceptions.SendRequestException;
 import com.example.simeon.manga_ln_app.mapper.ChapterMapper;
 import com.example.simeon.manga_ln_app.models.Chapter;

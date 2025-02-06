@@ -1,6 +1,7 @@
 package com.example.simeon.manga_ln_app.mapper;
 
 import com.example.simeon.manga_ln_app.dto.ChapterDTO;
+import com.example.simeon.manga_ln_app.dto.ChapterInfoDTO;
 import com.example.simeon.manga_ln_app.models.Chapter;
 import com.example.simeon.manga_ln_app.models.ChapterBeta;
 import org.springframework.stereotype.Service;
@@ -15,6 +16,13 @@ public class ChapterMapper {
         chapterDTO.setContentName(chapter.getContent().getName());
         chapterDTO.setComments(chapter.getComments().stream().map(CommentMapper::convertCommentToDTO).toList());
         return chapterDTO;
+    }
+
+    public static ChapterInfoDTO convertChapterToInfoDTO(Chapter chapter){
+        ChapterInfoDTO chapterInfoDTO = new ChapterInfoDTO();
+        chapterInfoDTO.setId(chapter.getId());
+        chapterInfoDTO.setName(chapter.getName());
+        return chapterInfoDTO;
     }
 
 

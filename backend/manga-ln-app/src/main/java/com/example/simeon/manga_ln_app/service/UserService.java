@@ -10,6 +10,7 @@ import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -17,8 +18,11 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.security.auth.login.CredentialNotFoundException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+@Slf4j
 @Service
 public class UserService {
 
@@ -67,7 +71,7 @@ public class UserService {
             .orElseThrow(() -> new IllegalArgumentException("User with username " + username + " does not exist!")));
     }
 
-    public String verify(UserCredentialsDTO userCredentialsDTO) throws CredentialNotFoundException {
+    public Map<String, String> verify(UserCredentialsDTO userCredentialsDTO) throws CredentialNotFoundException {
         Authentication authentication =
                 authenticationManager.authenticate(
                         new UsernamePasswordAuthenticationToken(
@@ -76,7 +80,12 @@ public class UserService {
                 );
 
         if(authentication.isAuthenticated()){
-            return jwtService.generateToken(userCredentialsDTO.getUsername());
+            Map<String, String> responseMap = new HashMap<>();
+            responseMap.put("username", userCredentialsDTO.getUsername());
+            responseMap.put("role", Role.valueOf(authentication.getAuthorities().iterator().next().getAuthority()).name());
+            responseMap.put("token", jwtService.generateToken(userCredentialsDTO.getUsername()));
+            log.info(responseMap.toString());
+            return responseMap;
         }
         throw new CredentialNotFoundException("Invalid credentials!");
     }
