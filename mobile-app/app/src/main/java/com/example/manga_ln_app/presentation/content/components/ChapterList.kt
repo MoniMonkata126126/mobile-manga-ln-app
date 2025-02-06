@@ -1,4 +1,4 @@
-package com.example.manga_ln_app.presentation.home.components
+package com.example.manga_ln_app.presentation.content.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -14,11 +14,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.manga_ln_app.domain.model.ListItem
 
-
 @Composable
-fun ContentList(
-    listItems: List<ListItem.Content>,
-    onContentClick: (ListItem.Content) -> Unit,
+fun ChapterList(
+    listItems: List<ListItem.Chapter>,
+    onBookClick: (ListItem.Chapter) -> Unit,
     modifier: Modifier = Modifier,
     scrollState: LazyListState = rememberLazyListState()
 ) {
@@ -32,14 +31,14 @@ fun ContentList(
             items = listItems,
             key = { it.id }
         ) { listItem ->
-            ContentListItem(
+            ChapterListItem(
                 item = listItem,
                 modifier = Modifier
                     .widthIn(max = 700.dp)
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp),
                 onClick = {
-                    onContentClick(listItem)
+                    onBookClick(listItem)
                 }
             )
         }

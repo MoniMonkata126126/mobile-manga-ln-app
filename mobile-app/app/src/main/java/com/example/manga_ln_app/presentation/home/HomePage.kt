@@ -40,7 +40,7 @@ import com.example.manga_ln_app.presentation.home.components.SearchBar
 @Composable
 fun HomePageRoot(
     viewModel: HomePageViewModel = hiltViewModel(),
-    onBookClick: (ListItem) -> Unit
+    onContentClick: (ListItem.Content) -> Unit
 ){
     val state by viewModel.state.collectAsStateWithLifecycle()
 
@@ -48,7 +48,7 @@ fun HomePageRoot(
         state = state,
         onAction = { action ->
             when(action) {
-                is HomePageAction.OnContentClick -> onBookClick(action.content)
+                is HomePageAction.OnContentClick -> onContentClick(action.content)
                 else -> Unit
             }
             viewModel.onAction(action)
@@ -199,7 +199,7 @@ fun HomePage(
                                         else -> {
                                             ContentList(
                                                 listItems = state.searchResultsM,
-                                                onBookClick = {
+                                                onContentClick = {
                                                     onAction(HomePageAction.OnContentClick(it))
                                                 },
                                                 modifier = Modifier.fillMaxSize(),
@@ -235,7 +235,7 @@ fun HomePage(
                                         else -> {
                                             ContentList(
                                                 listItems = state.searchResultsLN,
-                                                onBookClick = {
+                                                onContentClick = {
                                                     onAction(HomePageAction.OnContentClick(it))
                                                 },
                                                 modifier = Modifier.fillMaxSize(),
