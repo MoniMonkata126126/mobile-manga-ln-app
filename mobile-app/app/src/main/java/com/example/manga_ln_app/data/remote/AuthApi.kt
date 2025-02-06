@@ -2,6 +2,7 @@ package com.example.manga_ln_app.data.remote
 
 import com.example.manga_ln_app.data.model.AuthResponse
 import com.example.manga_ln_app.data.model.LoginRequest
+import com.example.manga_ln_app.domain.model.Type
 import com.example.manga_ln_app.domain.repository.Role
 import io.ktor.client.*
 import io.ktor.client.call.*
@@ -21,6 +22,7 @@ class AuthApi(private val client: HttpClient) {
             when (response.status) {
                 HttpStatusCode.OK -> {
                     val parsedResponse = response.body<Map<String, String>>()
+                    println("Parsed auth response: $parsedResponse")
                     return AuthResponse(
                         username = parsedResponse["username"] ?: throw IllegalStateException("No username in response"),
                         role = Role.entries.find { it.name == parsedResponse["role"] } ?: throw IllegalStateException("No role in response"),

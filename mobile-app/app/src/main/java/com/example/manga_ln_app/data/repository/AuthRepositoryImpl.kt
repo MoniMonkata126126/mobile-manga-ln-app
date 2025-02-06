@@ -9,6 +9,7 @@ class AuthRepositoryImpl @Inject constructor(
     private val api: AuthApi,
     private val credStorage: CredentialsStorage
 ) : AuthRepository {
+
     override suspend fun login(username: String, password: String): Result<Unit> {
         return try {
             val response = api.login(username, password)

@@ -39,7 +39,7 @@ class InMemoryCredentialsStorage @Inject constructor() : CredentialsStorage {
     }
 
     override fun saveRole(role: Role) {
-        println("Saving token: $role")
+        println("Saving role: $role")
         _role.value = role
     }
 

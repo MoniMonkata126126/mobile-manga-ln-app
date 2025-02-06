@@ -5,6 +5,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
+import com.example.manga_ln_app.domain.model.ListItem
 import com.example.manga_ln_app.presentation.home.HomePageRoot
 import com.example.manga_ln_app.presentation.login.LoginScreenRoot
 
@@ -25,7 +26,9 @@ fun AppNavigation(navController: NavHostController) {
             }
 
             composable<Route.HomePage> {
-                HomePageRoot()
+                HomePageRoot(
+                    onBookClick = { }
+                )
             }
         }
 

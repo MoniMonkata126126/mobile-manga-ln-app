@@ -84,7 +84,7 @@ fun HomePage(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.DarkGray)
+            .background(Color.hsv(240F, 0.66F, 0.94F))
             .statusBarsPadding(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -123,7 +123,7 @@ fun HomePage(
                     containerColor = Color.White,
                     indicator = { tabPositions ->
                         TabRowDefaults.SecondaryIndicator(
-                            color = Color.Yellow,
+                            color = Color.hsv(275f, 0.43f, 0.86f),
                             modifier = Modifier
                                 .tabIndicatorOffset(tabPositions[state.selectedTabIndex])
                         )
@@ -135,7 +135,7 @@ fun HomePage(
                             onAction(HomePageAction.OnTabSelected(0))
                         },
                         modifier = Modifier.weight(1f),
-                        selectedContentColor = Color.Yellow,
+                        selectedContentColor = Color.hsv(275f, 0.43f, 0.86f),
                         unselectedContentColor = Color.Black.copy(alpha = 0.5f)
                     ) {
                         Text(
@@ -150,7 +150,7 @@ fun HomePage(
                             onAction(HomePageAction.OnTabSelected(1))
                         },
                         modifier = Modifier.weight(1f),
-                        selectedContentColor = Color.Yellow,
+                        selectedContentColor = Color.hsv(275f, 0.43f, 0.86f),
                         unselectedContentColor = Color.Black.copy(alpha = 0.5f)
                     ) {
                         Text(
@@ -186,6 +186,7 @@ fun HomePage(
                                                 color = MaterialTheme.colorScheme.error
                                             )
                                         }
+
                                         state.searchResultsM.isEmpty() -> {
                                             Text(
                                                 text = "No search results",
@@ -194,6 +195,7 @@ fun HomePage(
                                                 color = MaterialTheme.colorScheme.error
                                             )
                                         }
+
                                         else -> {
                                             ContentList(
                                                 listItems = state.searchResultsM,
@@ -208,21 +210,39 @@ fun HomePage(
                                 }
                             }
                             1 -> {
-                                if(state.searchResultsLN.isEmpty()) {
-                                    Text(
-                                        text = "No Light Novels",
-                                        textAlign = TextAlign.Center,
-                                        style = MaterialTheme.typography.headlineSmall,
-                                    )
+                                if( state.isLoading ){
+                                    CircularProgressIndicator()
                                 } else {
-                                    ContentList(
-                                        listItems = state.searchResultsLN,
-                                        onBookClick = {
-                                            onAction(HomePageAction.OnContentClick(it))
-                                        },
-                                        modifier = Modifier.fillMaxSize(),
-                                        scrollState = searchResultsLNListState
-                                    )
+                                    when {
+                                        state.errorMessage != null -> {
+                                            Text(
+                                                text = state.errorMessage,
+                                                textAlign = TextAlign.Center,
+                                                style = MaterialTheme.typography.headlineSmall,
+                                                color = MaterialTheme.colorScheme.error
+                                            )
+                                        }
+
+                                        state.searchResultsLN.isEmpty() -> {
+                                            Text(
+                                                text = "No search results",
+                                                textAlign = TextAlign.Center,
+                                                style = MaterialTheme.typography.headlineSmall,
+                                                color = MaterialTheme.colorScheme.error
+                                            )
+                                        }
+
+                                        else -> {
+                                            ContentList(
+                                                listItems = state.searchResultsLN,
+                                                onBookClick = {
+                                                    onAction(HomePageAction.OnContentClick(it))
+                                                },
+                                                modifier = Modifier.fillMaxSize(),
+                                                scrollState = searchResultsLNListState
+                                            )
+                                        }
+                                    }
                                 }
                             }
                         }

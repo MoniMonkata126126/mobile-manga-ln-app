@@ -50,7 +50,6 @@ class HomePageViewModel @Inject constructor(
     fun onAction(action: HomePageAction) {
         when (action) {
             is HomePageAction.OnContentClick -> {
-                // Handle content click
             }
 
             is HomePageAction.OnSearchQueryChange -> {
@@ -61,7 +60,16 @@ class HomePageViewModel @Inject constructor(
 
             is HomePageAction.OnTabSelected -> {
                 _state.update {
-                    it.copy(selectedTabIndex = action.index)
+                    it.copy(
+                        selectedTabIndex = action.index,
+                        searchResultsM = if(action.index == 0) {
+                            if(it.searchQuery.isBlank()) cachedManga else it.searchResultsM
+                        } else emptyList(),
+                        searchResultsLN = if(action.index == 1) {
+                            if(it.searchQuery.isBlank()) cachedLightNovels else it.searchResultsLN
+                        } else emptyList(),
+                        searchQuery = ""
+                    )
                 }
                 if (action.index == 1 && cachedLightNovels.isEmpty()) {
                     observeLightNovels()
@@ -109,7 +117,7 @@ class HomePageViewModel @Inject constructor(
                         _state.update {
                             it.copy(
                                 errorMessage = null,
-                                searchResultsM = if(it.selectedTabIndex == 0) cachedManga else cachedLightNovels,
+                                searchResultsM = if(it.selectedTabIndex == 0) cachedManga else emptyList(),
                                 searchResultsLN = if(it.selectedTabIndex == 1) cachedLightNovels else emptyList()
                             )
                         }
@@ -132,19 +140,12 @@ class HomePageViewModel @Inject constructor(
             .searchContent(query, Type.fromInt(state.value.selectedTabIndex) ?: Type.MANGA)
             .onSuccess { searchResults ->
                 _state.update {
-                    if(state.value.selectedTabIndex == 0) {
-                        it.copy(
-                            isLoading = false,
-                            errorMessage = null,
-                            searchResultsM = searchResults
-                        )
-                    } else {
-                        it.copy(
-                            isLoading = false,
-                            errorMessage = null,
-                            searchResultsLN = searchResults
-                        )
-                    }
+                    it.copy(
+                        isLoading = false,
+                        errorMessage = null,
+                        searchResultsM = if(state.value.selectedTabIndex == 0) searchResults else emptyList(),
+                        searchResultsLN = if(state.value.selectedTabIndex == 1) searchResults else emptyList()
+                    )
                 }
             }
             .onFailure { error ->

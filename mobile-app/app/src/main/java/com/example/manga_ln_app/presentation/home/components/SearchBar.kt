@@ -42,8 +42,8 @@ fun SearchBar(
         onValueChange = onSearchQueryChange,
         shape = RoundedCornerShape(100),
         colors = OutlinedTextFieldDefaults.colors(
-            cursorColor = Color.Blue,
-            focusedBorderColor = Color.Blue
+            cursorColor = Color.hsv(275f, 0.43f, 0.86f),
+            focusedBorderColor = Color.hsv(275f, 0.43f, 0.86f)
         ),
         placeholder = {
             Text(

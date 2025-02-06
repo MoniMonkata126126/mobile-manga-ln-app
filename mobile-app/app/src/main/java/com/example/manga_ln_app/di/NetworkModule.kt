@@ -1,6 +1,8 @@
 package com.example.manga_ln_app.di
 
 import com.example.manga_ln_app.data.remote.AuthApi
+import com.example.manga_ln_app.data.remote.ContentApi
+import com.example.manga_ln_app.domain.repository.CredentialsStorage
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -34,5 +36,11 @@ object NetworkModule {
     @Singleton
     fun provideAuthApi(client: HttpClient): AuthApi {
         return AuthApi(client)
+    }
+
+    @Provides
+    @Singleton
+    fun provideContentApi(client: HttpClient, credStorage: CredentialsStorage): ContentApi {
+        return ContentApi(client, credStorage)
     }
 } 
