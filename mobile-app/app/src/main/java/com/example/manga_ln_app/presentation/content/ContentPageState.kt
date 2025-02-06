@@ -4,7 +4,7 @@ import com.example.manga_ln_app.domain.model.ListItem
 
 data class ContentPageState(
     val id: Int? = null,
-    val searchResults: List<ListItem.Chapter> = emptyList(),
+    val chapters: List<ListItem.Chapter> = emptyList(),
     val isLoading: Boolean = true,
     val errorMessage: String? = null,
 )

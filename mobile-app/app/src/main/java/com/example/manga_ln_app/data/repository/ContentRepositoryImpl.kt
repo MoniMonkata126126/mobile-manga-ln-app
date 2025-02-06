@@ -47,4 +47,21 @@ class ContentRepositoryImpl @Inject constructor(
             emit(emptyList())
         }
     }
+
+    override fun getChaptersPerContent(id: Int): Flow<List<ListItem.Chapter>> = flow {
+        try {
+            val chaptersInfo = contentApi.getChapterInfoByContentId(id).map {
+                dto ->
+                ListItem.Chapter(
+                    id = dto.id,
+                    name = dto.name
+                )
+            }
+            emit(chaptersInfo)
+        } catch (e: Exception){
+            println(e.message)
+            emit(emptyList())
+        }
+    }
+
 }

@@ -1,8 +1,10 @@
 package com.example.manga_ln_app.presentation.content.components
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
@@ -25,8 +27,13 @@ fun ChapterList(
         modifier = modifier,
         state = scrollState,
         verticalArrangement = Arrangement.spacedBy(12.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
+        contentPadding = PaddingValues(horizontal = 16.dp)
     ) {
+        item {
+            Spacer(modifier = Modifier.height(14.dp))
+        }
+
         items(
             items = listItems,
             key = { it.id }
@@ -35,8 +42,7 @@ fun ChapterList(
                 item = listItem,
                 modifier = Modifier
                     .widthIn(max = 700.dp)
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp),
+                    .fillMaxWidth(),
                 onClick = {
                     onBookClick(listItem)
                 }

@@ -33,25 +33,24 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.example.manga_ln_app.domain.model.ListItem
 import com.example.manga_ln_app.presentation.home.components.ContentList
 import com.example.manga_ln_app.presentation.home.components.SearchBar
 
 @Composable
 fun HomePageRoot(
     viewModel: HomePageViewModel = hiltViewModel(),
-    onContentClick: (ListItem.Content) -> Unit
+    onContentClick: () -> Unit
 ){
     val state by viewModel.state.collectAsStateWithLifecycle()
 
     HomePage(
         state = state,
         onAction = { action ->
+            viewModel.onAction(action)
             when(action) {
-                is HomePageAction.OnContentClick -> onContentClick(action.content)
+                is HomePageAction.OnContentClick -> onContentClick()
                 else -> Unit
             }
-            viewModel.onAction(action)
         }
 
     )

@@ -7,4 +7,5 @@ import kotlinx.coroutines.flow.Flow
 interface ContentRepository {
     suspend fun searchContent(query: String, type: Type): Result<List<ListItem.Content>>
     fun getContent(type: Type): Flow<List<ListItem.Content>>
+    fun getChaptersPerContent(id: Int): Flow<List<ListItem.Chapter>>
 }

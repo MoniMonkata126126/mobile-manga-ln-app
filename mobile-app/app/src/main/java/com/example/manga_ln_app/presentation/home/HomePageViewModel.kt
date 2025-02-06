@@ -13,6 +13,7 @@ import javax.inject.Inject
 import androidx.lifecycle.viewModelScope
 import com.example.manga_ln_app.domain.model.Type
 import com.example.manga_ln_app.domain.repository.ContentRepository
+import com.example.manga_ln_app.presentation.ContentController
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -24,8 +25,10 @@ import kotlinx.coroutines.launch
 
 @HiltViewModel
 class HomePageViewModel @Inject constructor(
-    private val contentRepository: ContentRepository
+    private val contentRepository: ContentRepository,
+    private val contentController: ContentController
 ) : ViewModel() {
+
 
     private var cachedManga = emptyList<ListItem.Content>()
     private var cachedLightNovels = emptyList<ListItem.Content>()
@@ -50,6 +53,7 @@ class HomePageViewModel @Inject constructor(
     fun onAction(action: HomePageAction) {
         when (action) {
             is HomePageAction.OnContentClick -> {
+                contentController.changeContent(action.content)
             }
 
             is HomePageAction.OnSearchQueryChange -> {
