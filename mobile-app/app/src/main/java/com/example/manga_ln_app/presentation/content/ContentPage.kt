@@ -38,7 +38,7 @@ import com.example.manga_ln_app.presentation.content.components.ChapterList
 @Composable
 fun ContentPageRoot(
     viewModel: ContentPageViewModel = hiltViewModel(),
-    onChapterClick: (ListItem) -> Unit,
+    onChapterClick: (ListItem.Chapter) -> Unit,
     onBackClick: () -> Unit
 ){
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -141,7 +141,7 @@ fun ContentPage(
                                     else -> {
                                         ChapterList(
                                             listItems = state.chapters,
-                                            onBookClick = {
+                                            onChapterClick = {
                                                 onAction(ContentPageAction.OnChapterClick(it))
                                             },
                                             modifier = Modifier

@@ -19,7 +19,7 @@ import com.example.manga_ln_app.domain.model.ListItem
 @Composable
 fun ChapterList(
     listItems: List<ListItem.Chapter>,
-    onBookClick: (ListItem.Chapter) -> Unit,
+    onChapterClick: (ListItem.Chapter) -> Unit,
     modifier: Modifier = Modifier,
     scrollState: LazyListState = rememberLazyListState()
 ) {
@@ -44,7 +44,7 @@ fun ChapterList(
                     .widthIn(max = 700.dp)
                     .fillMaxWidth(),
                 onClick = {
-                    onBookClick(listItem)
+                    onChapterClick(listItem)
                 }
             )
         }

@@ -5,7 +5,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
-import com.example.manga_ln_app.domain.model.ListItem
+import androidx.navigation.toRoute
+import com.example.manga_ln_app.presentation.chapter.ChapterPageRoot
 import com.example.manga_ln_app.presentation.content.ContentPageRoot
 import com.example.manga_ln_app.presentation.home.HomePageRoot
 import com.example.manga_ln_app.presentation.login.LoginScreenRoot
@@ -27,8 +28,6 @@ fun AppNavigation(navController: NavHostController) {
                 )
             }
 
-
-
             composable<Route.HomePage> {
                 HomePageRoot(
                     onContentClick = {
@@ -41,8 +40,20 @@ fun AppNavigation(navController: NavHostController) {
 
                 ContentPageRoot(
                     onChapterClick = {
-
+                        chapter ->
+                        navController.navigate(Route.ChapterPage(chapter.id, chapter.name))
                     },
+                    onBackClick = {
+                        navController.navigateUp()
+                    }
+                )
+            }
+
+            composable<Route.ChapterPage> { entry ->
+                val args = entry.toRoute<Route.ChapterPage>()
+
+                ChapterPageRoot(
+                    id = args.id,
                     onBackClick = {
                         navController.navigateUp()
                     }

@@ -2,7 +2,6 @@ package com.example.manga_ln_app.data.remote
 
 import com.example.manga_ln_app.data.model.AuthResponse
 import com.example.manga_ln_app.data.model.LoginRequest
-import com.example.manga_ln_app.domain.model.Type
 import com.example.manga_ln_app.domain.repository.Role
 import io.ktor.client.*
 import io.ktor.client.call.*

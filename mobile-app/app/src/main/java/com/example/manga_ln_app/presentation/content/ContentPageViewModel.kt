@@ -19,7 +19,7 @@ import javax.inject.Inject
 @HiltViewModel
 class ContentPageViewModel @Inject constructor(
     private val contentRepository: ContentRepository,
-    private val contentController: ContentController
+    contentController: ContentController
 ) : ViewModel() {
 
 
@@ -27,10 +27,10 @@ class ContentPageViewModel @Inject constructor(
 
     val content = contentController.content
 
-    private val _state = MutableStateFlow(ContentPageState())
+    private val _state = MutableStateFlow(ContentPageState(type = content.value?.type))
     val state = _state
         .onStart {
-            contentController.content.value?.let { observeChapters(it.id) }
+            content.value?.let { observeChapters(it.id) }
         }
         .stateIn(
             viewModelScope,

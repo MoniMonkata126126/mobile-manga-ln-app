@@ -3,17 +3,20 @@ package com.example.manga_ln_app.app.navigation
 import com.example.manga_ln_app.domain.model.ListItem
 import kotlinx.serialization.Serializable
 
-sealed class Route {
+sealed interface Route {
 
     @Serializable
-    data object PageGraph: Route()
+    data object PageGraph: Route
 
     @Serializable
-    data object LoginPage: Route()
+    data object LoginPage: Route
 
     @Serializable
-    data object HomePage: Route()
+    data object HomePage: Route
 
     @Serializable
-    data object ContentPage: Route()
+    data object ContentPage: Route
+
+    @Serializable
+    data class ChapterPage( val id: Int, val name: String ): Route
 } 

@@ -70,5 +70,7 @@ dependencies {
     implementation(libs.androidx.hilt.navigation.compose)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.datastore.preferences.v100)
+    implementation(libs.coil.compose)
+    implementation(libs.ktor.client.logging)
 
 }
