@@ -1,7 +1,9 @@
 package com.example.simeon.manga_ln_app.service;
 
 import com.example.simeon.manga_ln_app.dto.ChapterDTO;
+import com.example.simeon.manga_ln_app.dto.ChapterDetailsDTO;
 import com.example.simeon.manga_ln_app.dto.ChapterInfoDTO;
+import com.example.simeon.manga_ln_app.dto.CommentDetailsDTO;
 import com.example.simeon.manga_ln_app.exceptions.SendRequestException;
 import com.example.simeon.manga_ln_app.mapper.ChapterMapper;
 import com.example.simeon.manga_ln_app.models.Chapter;
@@ -12,6 +14,7 @@ import com.example.simeon.manga_ln_app.repository.ChapterBetaRepository;
 import com.example.simeon.manga_ln_app.repository.ChapterRepository;
 import com.example.simeon.manga_ln_app.repository.ContentRepository;
 import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -25,6 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 @Service
 public class ChapterService {
     @Value("${storage.bucket.url}")
@@ -154,5 +158,42 @@ public class ChapterService {
         chapterRepository.save(chapter);
         chapterBetaRepository.deleteChapterBetaByNameAndId(chapterBeta.getId(), chapterBeta.getName());
         return chapterMapper.convertChapterToDTO(chapter);
+    }
+
+    @Transactional
+    public ChapterDetailsDTO getChapterDetailsById(int id) {
+        log.info("In request get chapter details");
+        Chapter chapter = chapterRepository.findById(id)
+                .orElseThrow(
+                        () -> new IllegalArgumentException(
+                                "Chapter with id: " + id + " not found!"
+                        )
+                );
+        ChapterDetailsDTO chapterDetailsDTO = new ChapterDetailsDTO();
+        chapterDetailsDTO.setId(id);
+        chapterDetailsDTO.setName(chapter.getName());
+        List<String> urls = chapter.getChapterContentList().stream()
+                .map(chapterContent -> chapterContent.getContentURL().replace(
+                        "/object/content-library/",
+                        "/object/public/content-library/"
+                ))
+                .toList();
+
+        chapterDetailsDTO.setImageURLs(urls);
+
+        List<CommentDetailsDTO> commentDetails = chapter.getComments().stream().map(
+                comment -> {
+                    CommentDetailsDTO commentDetailsDTO = new CommentDetailsDTO();
+                    commentDetailsDTO.setId(comment.getId());
+                    commentDetailsDTO.setAuthor(comment.getAuthor().getUsername());
+                    commentDetailsDTO.setText(comment.getText());
+                    return commentDetailsDTO;
+                }
+        ).toList();
+
+        log.info(chapterDetailsDTO.toString());
+
+        chapterDetailsDTO.setCommentDetailsList(commentDetails);
+        return chapterDetailsDTO;
     }
 }

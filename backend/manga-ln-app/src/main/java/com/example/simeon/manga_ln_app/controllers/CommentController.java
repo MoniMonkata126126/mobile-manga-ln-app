@@ -18,14 +18,12 @@ public class CommentController {
         this.commentService = commentService;
     }
 
-    //TODO: TO BE REFACTORED AFTER SPRING SECURITY
     @PostMapping()
     public ResponseEntity<String> addComment(@Valid @RequestBody CommentBetaDTO commentBetaDTO){
         commentService.addComment(commentBetaDTO);
         return new ResponseEntity<>("Comment awaiting approval", HttpStatus.CREATED);
     }
 
-    //TODO: TO BE ADDED AUTHORIZATION
     @PostMapping("/approve/{id}")
     public ResponseEntity<CommentDTO> approveComment(@PathVariable int id){
         return new ResponseEntity<>(commentService.approveComment(id), HttpStatus.CREATED);

@@ -1,7 +1,7 @@
 package com.example.simeon.manga_ln_app.controllers;
 
 import com.example.simeon.manga_ln_app.dto.ChapterDTO;
-import com.example.simeon.manga_ln_app.dto.ChapterInfoDTO;
+import com.example.simeon.manga_ln_app.dto.ChapterDetailsDTO;
 import com.example.simeon.manga_ln_app.service.ChapterService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,5 +30,10 @@ public class ChapterController {
     @PostMapping("/approve/{id}")
     public ResponseEntity<ChapterDTO> approveChapterBeta(@PathVariable int id){
         return new ResponseEntity<>(chapterService.approveChapterBeta(id), HttpStatus.CREATED);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ChapterDetailsDTO> getChapterById(@PathVariable int id){
+        return new ResponseEntity<>(chapterService.getChapterDetailsById(id), HttpStatus.OK);
     }
 }
