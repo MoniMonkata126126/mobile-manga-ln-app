@@ -56,14 +56,6 @@ public class User {
     private List<Comment> comments;
 
     @NotNull
-    @ManyToMany
-    @JoinTable( name = "user_liked_content",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "content_id")
-    )
-    private List<Content> likedContent;
-
-    @NotNull
     @OneToMany(mappedBy = "author",
             cascade = CascadeType.ALL,
             orphanRemoval = true,

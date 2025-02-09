@@ -53,8 +53,4 @@ public class Content {
             orphanRemoval = true,
             fetch = FetchType.EAGER)
     private List<ChapterBeta> chaptersBeta;
-
-    @NotNull
-    @ManyToMany(mappedBy = "likedContent")
-    private List<User> userLikes;
 }

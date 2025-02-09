@@ -25,7 +25,6 @@ public class UserMapper {
         user.setRole(Role.READER);
         user.setComments(List.of());
         user.setCreatedWorks(List.of());
-        user.setLikedContent(List.of());
         user.setPendingComments(List.of());
         user.setPendingWorks(List.of());
         return user;

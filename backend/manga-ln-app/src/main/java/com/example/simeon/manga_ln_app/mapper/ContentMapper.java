@@ -39,7 +39,6 @@ public class ContentMapper {
         content.setAuthor(contentBeta.getAuthor());
         content.setChapters(new ArrayList<>());
         content.setChaptersBeta(new ArrayList<>());
-        content.setUserLikes(new ArrayList<>());
         return content;
     }
 
