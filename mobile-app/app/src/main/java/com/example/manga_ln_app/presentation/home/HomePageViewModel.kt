@@ -1,9 +1,8 @@
 package com.example.manga_ln_app.presentation.home
 
-import androidx.collection.emptyLongSet
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import com.example.manga_ln_app.domain.model.ListItem
-import com.example.manga_ln_app.domain.repository.CredentialsStorage
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -13,6 +12,8 @@ import javax.inject.Inject
 import androidx.lifecycle.viewModelScope
 import com.example.manga_ln_app.domain.model.Type
 import com.example.manga_ln_app.domain.repository.ContentRepository
+import com.example.manga_ln_app.domain.repository.CredentialsStorage
+import com.example.manga_ln_app.domain.repository.Role
 import com.example.manga_ln_app.presentation.ContentController
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.debounce
@@ -26,7 +27,9 @@ import kotlinx.coroutines.launch
 @HiltViewModel
 class HomePageViewModel @Inject constructor(
     private val contentRepository: ContentRepository,
-    private val contentController: ContentController
+    private val contentController: ContentController,
+    private val credentialsStorage: CredentialsStorage,
+    savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
 
@@ -36,7 +39,7 @@ class HomePageViewModel @Inject constructor(
     private var observeMangaJob: Job? = null
     private var observeLightNovelsJob: Job? = null
 
-    private val _state = MutableStateFlow(HomePageState())
+    private val _state = MutableStateFlow(HomePageState(userRole = Role.valueOf(savedStateHandle["role"] ?: "READER")))
     val state = _state
         .onStart {
             if(cachedManga.isEmpty()) {
@@ -78,6 +81,12 @@ class HomePageViewModel @Inject constructor(
                 if (action.index == 1 && cachedLightNovels.isEmpty()) {
                     observeLightNovels()
                 }
+            }
+
+            HomePageAction.OnLogout -> {
+                credentialsStorage.saveRole(null)
+                credentialsStorage.saveToken(null)
+                credentialsStorage.saveUsername(null)
             }
         }
     }

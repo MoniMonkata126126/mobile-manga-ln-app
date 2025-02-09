@@ -64,4 +64,13 @@ class ContentRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun postContent(contentName: String, contentType: Type) {
+        try {
+            val chaptersInfo = contentApi.postContent(contentName, contentType)
+            println("Post content response: $chaptersInfo")
+        } catch (e: Exception){
+            println(e.message)
+        }
+    }
+
 }

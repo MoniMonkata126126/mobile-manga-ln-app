@@ -16,7 +16,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.manga_ln_app.domain.model.Comment
-import kotlin.math.min
 
 @Composable
 fun CommentItem(

@@ -10,6 +10,7 @@ import io.ktor.client.request.bearerAuth
 import io.ktor.client.request.get
 import io.ktor.client.request.parameter
 import io.ktor.client.request.post
+import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.contentType
@@ -75,6 +76,35 @@ class ContentApi(
                 credStorage.getToken().first()?.let {
                     bearerAuth(it)
                 }
+            }
+
+            return when (response.status) {
+                HttpStatusCode.OK -> {
+                    response.body()
+                }
+                HttpStatusCode.Unauthorized -> throw Exception("Unauthorized")
+                else -> throw Exception("Server error: ${response.status}")
+            }
+        } catch (e: Exception) {
+            println("Request error: ${e.message}")
+            throw e
+        }
+    }
+
+    suspend fun postContent(contentName: String, contentType: Type) {
+        try {
+            val response = client.post("$baseUrl/content") {
+                contentType(ContentType.Application.Json)
+                credStorage.getToken().first()?.let {
+                    bearerAuth(it)
+                }
+                setBody(
+                    mapOf(
+                        "contentType" to contentType.name,
+                        "name" to contentName,
+                        "author" to credStorage.username.value
+                    )
+                )
             }
 
             return when (response.status) {

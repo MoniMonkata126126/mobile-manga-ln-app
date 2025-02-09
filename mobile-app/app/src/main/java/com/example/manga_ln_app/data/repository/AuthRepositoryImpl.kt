@@ -10,7 +10,7 @@ class AuthRepositoryImpl @Inject constructor(
     private val credStorage: CredentialsStorage
 ) : AuthRepository {
 
-    override suspend fun login(username: String, password: String): Result<Unit> {
+    override suspend fun login(username: String, password: String): Result<String> {
         return try {
             val response = api.login(username, password)
             println("Login response token: ${response.token}")
@@ -20,7 +20,7 @@ class AuthRepositoryImpl @Inject constructor(
                 credStorage.saveUsername(response.username)
                 credStorage.saveRole(response.role)
                 credStorage.saveToken(response.token)
-                Result.success(Unit)
+                Result.success(response.role.name)
             }
         } catch (e: Exception) {
             println("Login error: ${e.message}")
@@ -28,7 +28,7 @@ class AuthRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun register(username: String, password: String): Result<Unit> {
+    override suspend fun register(username: String, password: String): Result<String> {
         return try {
             val response = api.register(username, password)
             if (response.token.isBlank() || response.token == "null token") {
@@ -37,7 +37,7 @@ class AuthRepositoryImpl @Inject constructor(
                 credStorage.saveUsername(response.username)
                 credStorage.saveRole(response.role)
                 credStorage.saveToken(response.token)
-                Result.success(Unit)
+                Result.success(response.role.name)
             }
         } catch (e: Exception) {
             println("Register error: ${e.message}")

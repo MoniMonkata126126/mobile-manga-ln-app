@@ -18,14 +18,14 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 @Composable
 fun LoginScreenRoot(
     viewModel: LoginViewModel = hiltViewModel(),
-    onAuthSelf: () -> Unit,
+    onAuthSelf: (String) -> Unit,
     onError: () -> Unit
 ){
     val state by viewModel.state.collectAsStateWithLifecycle()
 
     LaunchedEffect(state.isLoggedIn) {
         if (state.isLoggedIn) {
-            onAuthSelf()
+            state.loggedInRole?.let { onAuthSelf(it) }
         }
     }
 

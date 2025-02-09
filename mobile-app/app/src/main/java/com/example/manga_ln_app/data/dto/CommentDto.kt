@@ -5,7 +5,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class CommentDto(
-    @SerialName("authorName") val author: String,
-    @SerialName("chapterId") val id: Int,
+    @SerialName("id") val id: Int,
+    @SerialName("author") val author: String,
     @SerialName("text") val text: String
 )

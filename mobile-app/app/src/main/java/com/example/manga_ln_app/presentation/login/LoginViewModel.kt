@@ -39,8 +39,8 @@ class LoginViewModel @Inject constructor(
             _state.update { it.copy(isLoading = true, error = null) }
             try {
                 val result = loginUseCase(state.value.username, state.value.password)
-                result.onSuccess {
-                    _state.update { it.copy(isLoading = false, isLoggedIn = true) }
+                result.onSuccess { role ->
+                    _state.update { it.copy(isLoading = false, loggedInRole = role, isLoggedIn = true ) }
                 }.onFailure { error ->
                     println("Login failure: ${error.message}")
                     _state.update { it.copy(isLoading = false, error = error.message) }
@@ -56,8 +56,8 @@ class LoginViewModel @Inject constructor(
         viewModelScope.launch {
             _state.update { it.copy(isLoading = true, error = null) }
             val result = registerUseCase(state.value.username, state.value.password)
-            result.onSuccess {
-                _state.update { it.copy(isLoading = false, isLoggedIn = true) }
+            result.onSuccess { role ->
+                _state.update { it.copy(isLoading = false, loggedInRole = role, isLoggedIn = true ) }
             }.onFailure { error ->
                 _state.update { it.copy(isLoading = false, error = error.message) }
             }

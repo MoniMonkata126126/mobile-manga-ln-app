@@ -5,7 +5,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class PostComment(
-    @SerialName("username") val username: String,
-    @SerialName("id") val chapterId: Int,
+    @SerialName("authorName") val username: String,
+    @SerialName("chapterId") val chapterId: Int,
     @SerialName("text") val text: String
 )

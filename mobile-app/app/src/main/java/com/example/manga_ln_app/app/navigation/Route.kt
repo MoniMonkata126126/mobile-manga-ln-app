@@ -1,6 +1,5 @@
 package com.example.manga_ln_app.app.navigation
 
-import com.example.manga_ln_app.domain.model.ListItem
 import kotlinx.serialization.Serializable
 
 sealed interface Route {
@@ -12,11 +11,17 @@ sealed interface Route {
     data object LoginPage: Route
 
     @Serializable
-    data object HomePage: Route
+    data class HomePage( val role: String ): Route
 
     @Serializable
     data object ContentPage: Route
 
     @Serializable
     data class ChapterPage( val id: Int, val name: String ): Route
+
+    @Serializable
+    data object PostPage: Route
+
+    @Serializable
+    data object ApprovePage: Route
 } 

@@ -48,11 +48,11 @@ fun ContentPageRoot(
         state = state,
         content = content,
         onAction = { action ->
+            viewModel.onAction(action)
             when(action) {
                 is ContentPageAction.OnChapterClick -> onChapterClick(action.chapter)
                 else -> Unit
             }
-            viewModel.onAction(action)
         },
         onBackClick = onBackClick
     )

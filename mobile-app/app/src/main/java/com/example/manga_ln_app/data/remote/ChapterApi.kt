@@ -1,18 +1,20 @@
 package com.example.manga_ln_app.data.remote
 
 import com.example.manga_ln_app.data.dto.ChapterExpandedDto
-import com.example.manga_ln_app.data.dto.ChapterInfo
-import com.example.manga_ln_app.data.model.AuthResponse
 import com.example.manga_ln_app.data.model.PostComment
 import com.example.manga_ln_app.domain.repository.CredentialsStorage
-import com.example.manga_ln_app.domain.repository.Role
+import com.example.manga_ln_app.domain.usecase.FileInfo
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.bearerAuth
+import io.ktor.client.request.forms.formData
+import io.ktor.client.request.forms.submitFormWithBinaryData
 import io.ktor.client.request.get
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
+import io.ktor.http.Headers
+import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.contentType
 import kotlinx.coroutines.flow.first
@@ -73,6 +75,41 @@ class ChapterApi @Inject constructor(
             }
         } catch (e: Exception){
             println("Error posting comment: " + e.message)
+        }
+    }
+
+    suspend fun postChapter(info: List<FileInfo>, chapContName: String, chapName: String) {
+        try {
+            val response = client.submitFormWithBinaryData(
+                url = "$baseUrl/chapter",
+                formData = formData {
+                    append("contentName", chapContName)
+                    append("chapterName", chapName)
+                    
+                    info.forEach { fileInfo ->
+                        append("data", fileInfo.bytes, Headers.build {
+                            append(HttpHeaders.ContentType, fileInfo.mimeType)
+                            append(HttpHeaders.ContentDisposition, "filename=${fileInfo.name}")
+                        })
+                    }
+                }
+            ) {
+                credStorage.getToken().first()?.let { token ->
+                    bearerAuth(token)
+                }
+            }
+            
+            when(response.status) {
+                HttpStatusCode.OK -> {
+                    val parsedResponse = response.body<String>()
+                    println("POST chapter response: $parsedResponse")
+                }
+                HttpStatusCode.Forbidden -> throw Exception("Invalid credentials")
+                HttpStatusCode.BadRequest -> throw Exception("Bad request")
+                else -> throw Exception("Server error: ${response.status}")
+            }
+        } catch (e: Exception) {
+            println("Error when uploading chapter: ${e.message}")
         }
     }
 }

@@ -9,15 +9,15 @@ interface CredentialsStorage {
     val role: StateFlow<Role?>
     val token: StateFlow<String?>
 
-    fun saveToken(token: String)
+    fun saveToken(token: String?)
 
     fun getToken(): Flow<String?>
 
-    fun saveUsername(username: String)
+    fun saveUsername(username: String?)
 
     fun getUsername(): Flow<String?>
 
-    fun saveRole(role: Role)
+    fun saveRole(role: Role?)
 
     fun getRole(): Flow<Role?>
 }

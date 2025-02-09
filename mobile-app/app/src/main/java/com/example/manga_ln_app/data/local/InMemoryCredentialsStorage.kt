@@ -20,7 +20,7 @@ class InMemoryCredentialsStorage @Inject constructor() : CredentialsStorage {
     override val role = _role.asStateFlow()
 
 
-    override fun saveToken(token: String) {
+    override fun saveToken(token: String?) {
         println("Saving token: $token")
         _token.value = token
     }
@@ -29,7 +29,7 @@ class InMemoryCredentialsStorage @Inject constructor() : CredentialsStorage {
         return token
     }
 
-    override fun saveUsername(username: String) {
+    override fun saveUsername(username: String?) {
         println("Saving username: $username")
         _username.value = username
     }
@@ -38,7 +38,7 @@ class InMemoryCredentialsStorage @Inject constructor() : CredentialsStorage {
         return username
     }
 
-    override fun saveRole(role: Role) {
+    override fun saveRole(role: Role?) {
         println("Saving role: $role")
         _role.value = role
     }

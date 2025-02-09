@@ -10,6 +10,7 @@ import com.example.manga_ln_app.presentation.chapter.ChapterPageRoot
 import com.example.manga_ln_app.presentation.content.ContentPageRoot
 import com.example.manga_ln_app.presentation.home.HomePageRoot
 import com.example.manga_ln_app.presentation.login.LoginScreenRoot
+import com.example.manga_ln_app.presentation.post_content.PostPageRoot
 
 @Composable
 fun AppNavigation(navController: NavHostController) {
@@ -23,15 +24,27 @@ fun AppNavigation(navController: NavHostController) {
         {
             composable<Route.LoginPage> {
                 LoginScreenRoot(
-                    onAuthSelf = { navController.navigate(Route.HomePage) },
+                    onAuthSelf = { role -> navController.navigate(Route.HomePage(role)) },
                     onError = { navController.navigate(Route.LoginPage) }
                 )
             }
 
-            composable<Route.HomePage> {
+            composable<Route.HomePage> { entry ->
+                val args = entry.toRoute<Route.HomePage>()
+
                 HomePageRoot(
+                    role = args.role,
+                    onLogout = {
+                        navController.navigate(Route.LoginPage)
+                    },
                     onContentClick = {
                         navController.navigate(Route.ContentPage)
+                    },
+                    onClickAuthor = {
+                        navController.navigate(Route.PostPage)
+                    },
+                    onClickMod = {
+                        navController.navigate(Route.ApprovePage)
                     }
                 )
             }
@@ -54,6 +67,14 @@ fun AppNavigation(navController: NavHostController) {
 
                 ChapterPageRoot(
                     id = args.id,
+                    onBackClick = {
+                        navController.navigateUp()
+                    }
+                )
+            }
+
+            composable<Route.PostPage> {
+                PostPageRoot(
                     onBackClick = {
                         navController.navigateUp()
                     }
