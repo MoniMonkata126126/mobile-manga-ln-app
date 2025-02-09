@@ -1,6 +1,8 @@
 package com.example.manga_ln_app.data.remote
 
+import com.example.manga_ln_app.data.dto.ChapterBetaDto
 import com.example.manga_ln_app.data.dto.ChapterExpandedDto
+import com.example.manga_ln_app.data.dto.CommentBetaDto
 import com.example.manga_ln_app.data.model.PostComment
 import com.example.manga_ln_app.domain.repository.CredentialsStorage
 import com.example.manga_ln_app.domain.usecase.FileInfo
@@ -110,6 +112,94 @@ class ChapterApi @Inject constructor(
             }
         } catch (e: Exception) {
             println("Error when uploading chapter: ${e.message}")
+        }
+    }
+
+    suspend fun getBetaChapters(): List<ChapterBetaDto>{
+        try {
+            val response = client.get("$baseUrl/chapter/beta") {
+                contentType(ContentType.Application.Json)
+                credStorage.getToken().first()?.let {
+                    bearerAuth(it)
+                }
+            }
+
+            return when (response.status) {
+                HttpStatusCode.OK -> {
+                    response.body<List<ChapterBetaDto>>()
+                }
+                HttpStatusCode.Unauthorized -> throw Exception("Unauthorized")
+                else -> throw Exception("Server error: ${response.status}")
+            }
+        } catch (e: Exception) {
+            println("Request error: ${e.message}")
+            throw e
+        }
+    }
+
+    suspend fun getBetaComments(): List<CommentBetaDto>{
+        try {
+            val response = client.get("$baseUrl/comment/beta") {
+                contentType(ContentType.Application.Json)
+                credStorage.getToken().first()?.let {
+                    bearerAuth(it)
+                }
+            }
+
+            return when (response.status) {
+                HttpStatusCode.OK -> {
+                    response.body<List<CommentBetaDto>>()
+                }
+                HttpStatusCode.Unauthorized -> throw Exception("Unauthorized")
+                else -> throw Exception("Server error: ${response.status}")
+            }
+        } catch (e: Exception) {
+            println("Request error: ${e.message}")
+            throw e
+        }
+    }
+
+    suspend fun approveChapter(id: Int) {
+        try {
+            val response = client.post("$baseUrl/chapter/approve/$id") {
+                contentType(ContentType.Application.Json)
+                credStorage.getToken().first()?.let {
+                    bearerAuth(it)
+                }
+            }
+            when(response.status){
+                HttpStatusCode.OK -> {
+                    val parsedResponse = response.body<String>()
+                    println("Parsed auth response: $parsedResponse")
+                }
+                HttpStatusCode.Forbidden -> throw Exception("Invalid credentials")
+                HttpStatusCode.BadRequest -> throw Exception("Bad request")
+                else -> throw Exception("Server error: ${response.status}")
+            }
+        } catch (e: Exception){
+            println("Error posting comment: " + e.message)
+        }
+    }
+
+    suspend fun approveComment(id: Int) {
+        try {
+            val response = client.post("$baseUrl/comment/approve/$id") {
+                contentType(ContentType.Application.Json)
+                credStorage.getToken().first()?.let {
+                    bearerAuth(it)
+                }
+            }
+            when(response.status){
+                HttpStatusCode.OK -> {
+                    val parsedResponse = response.body<String>()
+                    println("Parsed auth response: $parsedResponse")
+                }
+                HttpStatusCode.Forbidden -> throw Exception("Invalid credentials")
+                HttpStatusCode.BadRequest -> throw Exception("Bad request")
+                else -> throw Exception("Server error: ${response.status}")
+            }
+        } catch (e: Exception){
+            println("Error posting comment: " + e.message)
         }
     }
 }

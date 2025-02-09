@@ -6,6 +6,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.toRoute
+import com.example.manga_ln_app.presentation.approve_content.ApproveContentPageRoot
 import com.example.manga_ln_app.presentation.chapter.ChapterPageRoot
 import com.example.manga_ln_app.presentation.content.ContentPageRoot
 import com.example.manga_ln_app.presentation.home.HomePageRoot
@@ -75,6 +76,14 @@ fun AppNavigation(navController: NavHostController) {
 
             composable<Route.PostPage> {
                 PostPageRoot(
+                    onBackClick = {
+                        navController.navigateUp()
+                    }
+                )
+            }
+
+            composable<Route.ApprovePage> {
+                ApproveContentPageRoot(
                     onBackClick = {
                         navController.navigateUp()
                     }

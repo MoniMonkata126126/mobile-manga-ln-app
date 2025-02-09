@@ -1,6 +1,7 @@
 package com.example.manga_ln_app.data.repository
 
 import com.example.manga_ln_app.data.remote.ContentApi
+import com.example.manga_ln_app.domain.model.ContentBeta
 import com.example.manga_ln_app.domain.model.ListItem
 import com.example.manga_ln_app.domain.model.Type
 import com.example.manga_ln_app.domain.repository.ContentRepository
@@ -71,6 +72,26 @@ class ContentRepositoryImpl @Inject constructor(
         } catch (e: Exception){
             println(e.message)
         }
+    }
+
+    override fun getBetaContent(): Flow<List<ContentBeta>> = flow{
+        try{
+            val response = contentApi.getBetaContent().map { dto ->
+                ContentBeta(
+                    id = dto.id,
+                    name = dto.name,
+                    authorUsername = dto.author,
+                    contentType = Type.valueOf(dto.contentType)
+                )
+            }
+            emit(response)
+        } catch (e: Exception) {
+            emit(emptyList())
+        }
+    }
+
+    override suspend fun approveContent(id: Int) {
+        contentApi.approveContent(id)
     }
 
 }

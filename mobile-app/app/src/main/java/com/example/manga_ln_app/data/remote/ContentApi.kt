@@ -1,7 +1,9 @@
 package com.example.manga_ln_app.data.remote
 
 import com.example.manga_ln_app.data.dto.ChapterInfo
+import com.example.manga_ln_app.data.dto.CommentBetaDto
 import com.example.manga_ln_app.data.dto.Content
+import com.example.manga_ln_app.data.dto.ContentBetaDto
 import com.example.manga_ln_app.domain.model.Type
 import com.example.manga_ln_app.domain.repository.CredentialsStorage
 import io.ktor.client.HttpClient
@@ -117,6 +119,50 @@ class ContentApi(
         } catch (e: Exception) {
             println("Request error: ${e.message}")
             throw e
+        }
+    }
+
+    suspend fun getBetaContent(): List<ContentBetaDto>{
+        try {
+            val response = client.get("$baseUrl/content/beta") {
+                contentType(ContentType.Application.Json)
+                credStorage.getToken().first()?.let {
+                    bearerAuth(it)
+                }
+            }
+
+            return when (response.status) {
+                HttpStatusCode.OK -> {
+                    response.body<List<ContentBetaDto>>()
+                }
+                HttpStatusCode.Unauthorized -> throw Exception("Unauthorized")
+                else -> throw Exception("Server error: ${response.status}")
+            }
+        } catch (e: Exception) {
+            println("Request error: ${e.message}")
+            throw e
+        }
+    }
+
+    suspend fun approveContent(id: Int) {
+        try {
+            val response = client.post("$baseUrl/content/approve/$id") {
+                contentType(ContentType.Application.Json)
+                credStorage.getToken().first()?.let {
+                    bearerAuth(it)
+                }
+            }
+            when(response.status){
+                HttpStatusCode.OK -> {
+                    val parsedResponse = response.body<String>()
+                    println("Parsed auth response: $parsedResponse")
+                }
+                HttpStatusCode.Forbidden -> throw Exception("Invalid credentials")
+                HttpStatusCode.BadRequest -> throw Exception("Bad request")
+                else -> throw Exception("Server error: ${response.status}")
+            }
+        } catch (e: Exception){
+            println("Error posting comment: " + e.message)
         }
     }
 }

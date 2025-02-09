@@ -2,6 +2,7 @@ package com.example.manga_ln_app.presentation.post_content
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.manga_ln_app.domain.model.Type
 import com.example.manga_ln_app.domain.repository.ChapterRepository
 import com.example.manga_ln_app.domain.repository.ContentRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -72,7 +73,10 @@ class PostPageViewModel @Inject constructor(
                 contentType =  state.value.contentType)
 
             _state.update {
-                it.copy(isUploading = false)
+                it.copy(
+                    isUploading = false,
+                    contentName = "",
+                )
             }
         }
     }
@@ -88,7 +92,11 @@ class PostPageViewModel @Inject constructor(
                 contentUris =  state.value.selectedUris)
 
             _state.update {
-                it.copy(isUploading = false)
+                it.copy(isUploading = false,
+                    chapContName = "",
+                    chapName = "",
+                    selectedUris = emptyList()
+                )
             }
         }
     }
