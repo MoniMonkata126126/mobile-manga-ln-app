@@ -2,6 +2,7 @@ package com.example.simeon.manga_ln_app.service;
 
 import com.example.simeon.manga_ln_app.dto.CommentBetaDTO;
 import com.example.simeon.manga_ln_app.dto.CommentDTO;
+import com.example.simeon.manga_ln_app.dto.CommentDetailsDTO;
 import com.example.simeon.manga_ln_app.mapper.CommentMapper;
 import com.example.simeon.manga_ln_app.models.Chapter;
 import com.example.simeon.manga_ln_app.models.CommentBeta;
@@ -13,6 +14,8 @@ import com.example.simeon.manga_ln_app.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 
 @Service
@@ -65,5 +68,12 @@ public class CommentService {
 
         commentBetaRepository.deleteById(id);
         return commentMapper.convertToDTO(commentRepository.save(commentMapper.convertBetaToComment(commentBeta)));
+    }
+
+    public List<CommentDetailsDTO> getAllCommentBeta() {
+        List<CommentBeta> commentBetaList = commentBetaRepository.findAll();
+        return commentBetaList.stream()
+                .map(CommentMapper::convertBetaToDetailsDTO)
+                .toList();
     }
 }

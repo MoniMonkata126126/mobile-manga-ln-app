@@ -51,4 +51,9 @@ public class ContentController {
     public ResponseEntity<List<ChapterInfoDTO>> getChaptersPerContent(@PathVariable int id){
         return new ResponseEntity<>(contentService.getAllChaptersForContent(id), HttpStatus.OK);
     }
+
+    @GetMapping("/beta")
+    public  ResponseEntity<List<ContentBetaDTO>> getAllContentBeta(){
+        return new ResponseEntity<>(contentService.getAllContentBeta(), HttpStatus.OK);
+    }
 }

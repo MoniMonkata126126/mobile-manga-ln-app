@@ -51,7 +51,7 @@ public class ContentMapper {
         return contentBeta;
     }
 
-    public ContentBetaDTO convertToBetaDTOFromBeta(ContentBeta contentBeta) {
+    public static ContentBetaDTO convertToBetaDTOFromBeta(ContentBeta contentBeta) {
         ContentBetaDTO dto = new ContentBetaDTO();
         dto.setId(contentBeta.getId());
         dto.setContentType(contentBeta.getContentType());

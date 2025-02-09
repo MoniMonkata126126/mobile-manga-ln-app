@@ -1,5 +1,6 @@
 package com.example.simeon.manga_ln_app.mapper;
 
+import com.example.simeon.manga_ln_app.dto.ChapterBetaDetailsDTO;
 import com.example.simeon.manga_ln_app.dto.ChapterDTO;
 import com.example.simeon.manga_ln_app.dto.ChapterInfoDTO;
 import com.example.simeon.manga_ln_app.models.Chapter;
@@ -41,5 +42,13 @@ public class ChapterMapper {
         chapter.setComments(List.of());
         chapter.setChapterContentsCount(chapterBeta.getChapterContentsCount());
         return chapter;
+    }
+
+    public static ChapterBetaDetailsDTO chapBetaToChapBetaDetails(ChapterBeta chapterBeta){
+        ChapterBetaDetailsDTO chapterBetaDetailsDTO = new ChapterBetaDetailsDTO();
+        chapterBetaDetailsDTO.setId(chapterBeta.getId());
+        chapterBetaDetailsDTO.setName(chapterBeta.getName());
+        chapterBetaDetailsDTO.setContentName(chapterBeta.getContent().getName());
+        return chapterBetaDetailsDTO;
     }
 }

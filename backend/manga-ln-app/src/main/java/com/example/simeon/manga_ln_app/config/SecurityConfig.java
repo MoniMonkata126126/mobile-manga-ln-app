@@ -45,6 +45,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/chapter/approve/**").hasAnyAuthority("MODERATOR", "ADMIN")
                         .requestMatchers("/comment").hasAnyAuthority("READER", "AUTHOR")
                         .requestMatchers("/comment/approve/**").hasAnyAuthority("MODERATOR", "ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/comment/beta").hasAnyAuthority("MODERATOR", "ADMIN")
                         .anyRequest().authenticated())
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

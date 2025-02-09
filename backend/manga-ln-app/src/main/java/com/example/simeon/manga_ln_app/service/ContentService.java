@@ -61,7 +61,7 @@ public class ContentService {
         contentBetaRepository.save(contentBeta);
         ContentBeta saved = contentBetaRepository.findByName(contentBeta.getName())
                 .orElseThrow(() -> new DBSearchException("Couldn't save content with name: " + contentBeta.getName()));
-        return contentMapper.convertToBetaDTOFromBeta(saved);
+        return ContentMapper.convertToBetaDTOFromBeta(saved);
     }
 
     @Transactional
@@ -137,5 +137,12 @@ public class ContentService {
                 );
         List<Chapter> chapterList = content.getChapters();
         return chapterList.stream().map(ChapterMapper::convertChapterToInfoDTO).toList();
+    }
+
+    public List<ContentBetaDTO> getAllContentBeta() {
+        List<ContentBeta> contentBetaList = contentBetaRepository.findAll();
+        return contentBetaList.stream()
+                .map(ContentMapper::convertToBetaDTOFromBeta)
+                .toList();
     }
 }

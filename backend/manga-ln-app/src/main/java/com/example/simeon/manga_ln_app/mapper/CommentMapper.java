@@ -2,10 +2,8 @@ package com.example.simeon.manga_ln_app.mapper;
 
 import com.example.simeon.manga_ln_app.dto.CommentBetaDTO;
 import com.example.simeon.manga_ln_app.dto.CommentDTO;
-import com.example.simeon.manga_ln_app.models.Chapter;
-import com.example.simeon.manga_ln_app.models.Comment;
-import com.example.simeon.manga_ln_app.models.CommentBeta;
-import com.example.simeon.manga_ln_app.models.User;
+import com.example.simeon.manga_ln_app.dto.CommentDetailsDTO;
+import com.example.simeon.manga_ln_app.models.*;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -51,5 +49,13 @@ public class CommentMapper {
         commentBeta.setChapter(chapter);
         commentBeta.setText(commentBetaDTO.getText());
         return commentBeta;
+    }
+
+    public static CommentDetailsDTO convertBetaToDetailsDTO(CommentBeta commentBeta){
+        CommentDetailsDTO commentDetailsDTO = new CommentDetailsDTO();
+        commentDetailsDTO.setId(commentBeta.getId());
+        commentDetailsDTO.setAuthor(commentBeta.getAuthor().getUsername());
+        commentDetailsDTO.setText(commentBeta.getText());
+        return commentDetailsDTO;
     }
 }
