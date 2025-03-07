@@ -98,26 +98,38 @@ fun ChapterPage(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 state = rememberLazyListState()
             ) {
-                state.currentChapter?.let { chapter ->
-                    items(
-                        items = chapter.chapterImagesURLs,
-                        key = { url -> url }
-                    ) { imageUrl ->
+                if(state.genre == "manga") {
+                    state.currentChapter?.let { chapter ->
+                        items(
+                            items = chapter.chapterImagesURLs,
+                            key = { url -> url }
+                        ) { imageUrl ->
 
-                        AsyncImage(
-                            model = imageUrl.replace(" ", "%20"),
-                            contentDescription = "chapter image",
-                            onError = {
-                                println("Error 123: ${it.result.throwable}")
-                            },
-                            onSuccess = {
-                                println("Success 123")
-                            },
-                            onLoading = {
-                                println("Loading 123L: ${it.painter}")
-                            },
-                            contentScale = ContentScale.FillWidth,
-                            modifier = Modifier.fillMaxWidth()
+                            AsyncImage(
+                                model = imageUrl.replace(" ", "%20"),
+                                contentDescription = "chapter image",
+                                onError = {
+                                    println("Error 123: ${it.result.throwable}")
+                                },
+                                onSuccess = {
+                                    println("Success 123")
+                                },
+                                onLoading = {
+                                    println("Loading 123L: ${it.painter}")
+                                },
+                                contentScale = ContentScale.FillWidth,
+                                modifier = Modifier.fillMaxWidth()
+                            )
+                        }
+                    }
+                } else if (state.genre == "ln"){
+                    item {
+                        Text(
+                            text = state.currentChapterText,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 16.dp),
+                            fontSize = 22.sp
                         )
                     }
                 }
