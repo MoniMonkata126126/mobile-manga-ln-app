@@ -9,7 +9,7 @@ import io.ktor.client.request.*
 import io.ktor.http.*
 
 class AuthApi(private val client: HttpClient) {
-    private val baseUrl = "http://192.168.1.12:8080"
+    private val baseUrl = "http://192.168.95.90:8080"
 
     suspend fun login(username: String, password: String): AuthResponse {
         try {
