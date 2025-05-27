@@ -2,6 +2,7 @@ package com.example.simeon.manga_ln_app.controllers;
 
 import com.example.simeon.manga_ln_app.dto.UserCredentialsDTO;
 import com.example.simeon.manga_ln_app.dto.UserDTO;
+import com.example.simeon.manga_ln_app.models.Content;
 import com.example.simeon.manga_ln_app.models.Role;
 import com.example.simeon.manga_ln_app.service.UserService;
 import jakarta.validation.Valid;
@@ -52,5 +53,10 @@ public class UserController {
     @PutMapping("/role/{username}")
     public ResponseEntity<UserDTO> changeRole(@PathVariable String username, @RequestParam Role role){
         return new ResponseEntity<>(userService.changeRole(username, role), HttpStatus.OK);
+    }
+
+    @GetMapping("/content/username/{username}")
+    public ResponseEntity<List<Content>> getContentOfUser(@PathVariable String username){
+        return new ResponseEntity<>(userService.findContentByUsername(username), HttpStatus.OK);
     }
 }
