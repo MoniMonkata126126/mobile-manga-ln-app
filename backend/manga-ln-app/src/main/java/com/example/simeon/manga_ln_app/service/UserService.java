@@ -101,6 +101,7 @@ public class UserService {
         return userMapper.convertToDTO(user);
     }
 
+    @Transactional
     public List<Content> findContentByUsername(String username) {
         User user = userRepository.findByUsername(username).orElseThrow(
                 () -> new IllegalArgumentException( "User with username: " + username + " not found!" )
