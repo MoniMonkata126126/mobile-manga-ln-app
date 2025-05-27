@@ -1,5 +1,6 @@
 package com.example.simeon.manga_ln_app.service;
 
+import com.example.simeon.manga_ln_app.dto.ContentDTO;
 import com.example.simeon.manga_ln_app.dto.UserCredentialsDTO;
 import com.example.simeon.manga_ln_app.mapper.UserMapper;
 import com.example.simeon.manga_ln_app.models.Content;
@@ -102,11 +103,16 @@ public class UserService {
     }
 
     @Transactional
-    public List<Content> findContentByUsername(String username) {
+    public List<ContentDTO> findContentByUsername(String username) {
         User user = userRepository.findByUsername(username).orElseThrow(
                 () -> new IllegalArgumentException( "User with username: " + username + " not found!" )
         );
-        List<Content> contentList = user.getCreatedWorks();
-        return contentList;
+        return user.getCreatedWorks().stream().map(
+                content -> new ContentDTO(
+                        content.getId(),
+                        content.getContentType(),
+                        content.getName(),
+                        content.getAuthor().getUsername())
+        ).toList();
     }
 }

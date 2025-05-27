@@ -1,5 +1,6 @@
 package com.example.simeon.manga_ln_app.controllers;
 
+import com.example.simeon.manga_ln_app.dto.ContentDTO;
 import com.example.simeon.manga_ln_app.dto.UserCredentialsDTO;
 import com.example.simeon.manga_ln_app.dto.UserDTO;
 import com.example.simeon.manga_ln_app.models.Content;
@@ -56,7 +57,7 @@ public class UserController {
     }
 
     @GetMapping("/content/username/{username}")
-    public ResponseEntity<List<Content>> getContentOfUser(@PathVariable String username){
+    public ResponseEntity<List<ContentDTO>> getContentOfUser(@PathVariable String username){
         return new ResponseEntity<>(userService.findContentByUsername(username), HttpStatus.OK);
     }
 }
