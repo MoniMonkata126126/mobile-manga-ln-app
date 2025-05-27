@@ -37,6 +37,7 @@ public class SecurityConfig {
                         .requestMatchers("/", "/user/register", "/user/login").permitAll()
                         .requestMatchers("/user", "user/id/**", "user/username/**").hasAnyAuthority("MODERATOR", "ADMIN")
                         .requestMatchers("user/role/**").hasAuthority("ADMIN")
+                        .requestMatchers("/user/content/username/**").hasAuthority("AUTHOR")
                         .requestMatchers(HttpMethod.GET, "/content/**").hasAnyAuthority("READER", "AUTHOR", "MODERATOR", "ADMIN")
                         .requestMatchers(HttpMethod.POST, "/content").hasAuthority("AUTHOR")
                         .requestMatchers("/content/approve/**").hasAnyAuthority("MODERATOR", "ADMIN")

@@ -2,6 +2,7 @@ package com.example.simeon.manga_ln_app.service;
 
 import com.example.simeon.manga_ln_app.dto.UserCredentialsDTO;
 import com.example.simeon.manga_ln_app.mapper.UserMapper;
+import com.example.simeon.manga_ln_app.models.Content;
 import com.example.simeon.manga_ln_app.models.Role;
 import com.example.simeon.manga_ln_app.models.User;
 import com.example.simeon.manga_ln_app.repository.UserRepository;
@@ -98,5 +99,12 @@ public class UserService {
                 ));
         user.setRole(role);
         return userMapper.convertToDTO(user);
+    }
+
+    public List<Content> findContentByUsername(String username) {
+        User user = userRepository.findByUsername(username).orElseThrow(
+                () -> new IllegalArgumentException( "User with username: " + username + " not found!" )
+        );
+        return user.getCreatedWorks();
     }
 }
