@@ -26,7 +26,7 @@ class ChapterApi @Inject constructor(
     private val client: HttpClient,
     private val credStorage: CredentialsStorage
 ) {
-    private val baseUrl = "http://192.168.95.90:8080"
+    private val baseUrl = "http://176.12.34.24:80"
 
     suspend fun getChapterDetails(id: Int): ChapterExpandedDto {
         try {

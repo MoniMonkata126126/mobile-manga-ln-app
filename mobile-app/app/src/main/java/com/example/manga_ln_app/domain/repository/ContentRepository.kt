@@ -12,4 +12,5 @@ interface ContentRepository {
     suspend fun postContent(contentName: String, contentType: Type)
     fun getBetaContent(): Flow<List<ContentBeta>>
     suspend fun approveContent(id: Int)
+    suspend fun getContentByAuthor(): List<ListItem.Content>
 }

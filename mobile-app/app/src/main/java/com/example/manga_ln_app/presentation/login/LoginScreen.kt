@@ -19,7 +19,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 fun LoginScreenRoot(
     viewModel: LoginViewModel = hiltViewModel(),
     onAuthSelf: (String) -> Unit,
-    onError: () -> Unit
+    onReturn: () -> Unit
 ){
     val state by viewModel.state.collectAsStateWithLifecycle()
 
@@ -34,7 +34,7 @@ fun LoginScreenRoot(
         onAction = { action ->
             viewModel.onAction(action)
         },
-        onError = onError
+        onReturn = onReturn
     )
 }
 
@@ -43,7 +43,7 @@ fun LoginScreenRoot(
 fun LoginScreen(
     state: LoginState,
     onAction: (LoginAction) -> Unit,
-    onError: () -> Unit
+    onReturn: () -> Unit
 ) {
 
     Column(
@@ -99,7 +99,7 @@ fun LoginScreen(
 
         state.error?.let { error ->
             Dialog(
-                onDismissRequest = { onError() }
+                onDismissRequest = { onReturn() }
             ) {
                 Box(
                     modifier = Modifier
@@ -118,7 +118,29 @@ fun LoginScreen(
                     )
                 }
             }
+        }
 
+        if( state.isLoggedIn and state.isRegistered) {
+            Dialog(
+                onDismissRequest = { onReturn() }
+            ) {
+                Box(
+                    modifier = Modifier
+                        .widthIn(150.dp, 350.dp)
+                        .heightIn(75.dp, 500.dp)
+                        .clip(shape = RoundedCornerShape(15.dp))
+                        .background(Color.White)
+                        .padding(16.dp)
+
+                ){
+                    Text(
+                        text = "You have successfully registered! Now you can log in and browse",
+                        color = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier
+                            .wrapContentHeight()
+                    )
+                }
+            }
         }
     }
 }

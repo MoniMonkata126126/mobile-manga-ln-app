@@ -2,7 +2,6 @@ package com.example.manga_ln_app.presentation.post_content
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.manga_ln_app.domain.model.Type
 import com.example.manga_ln_app.domain.repository.ChapterRepository
 import com.example.manga_ln_app.domain.repository.ContentRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -21,14 +20,13 @@ class PostPageViewModel @Inject constructor(
     private val _state = MutableStateFlow(PostPageState())
     val state = _state.asStateFlow()
 
+    init {
+        fetchInitData()
+    }
+
 
     fun onAction(action: PostPageAction){
         when(action){
-            is PostPageAction.OnChapContentNameChange -> {
-                _state.update {
-                    it.copy(chapContName = action.chapContentName)
-                }
-            }
             is PostPageAction.OnChapterNameChange -> {
                 _state.update {
                     it.copy(chapName = action.chapterName)
@@ -46,18 +44,38 @@ class PostPageViewModel @Inject constructor(
             }
             is PostPageAction.OnSelectedDropdownTwoChange -> {
                 _state.update {
-                    it.copy( chapContType = action.type )
+                    it.copy( chapContName = action.contentItem.title , chapContType = action.contentItem.type )
                 }
             }
             PostPageAction.OnPostButtonOneClick -> {
-                postContent()
+                if(state.value.contentName.isNotBlank()){
+                    postContent()
+                }
             }
             PostPageAction.OnPostButtonTwoClick -> {
-                postChapter()
+                if(state.value.chapContName.isNotBlank() and state.value.chapName.isNotBlank() ) {
+                    postChapter()
+                }
             }
             is PostPageAction.OnChangeSelectedUris -> {
                 _state.update {
                     it.copy(selectedUris = action.selectedUris)
+                }
+            }
+        }
+    }
+
+    private fun fetchInitData(){
+        viewModelScope.launch {
+            try {
+                val content = contentRepository.getContentByAuthor()
+                _state.update {
+                    it.copy(chapContOptions = content)
+                }
+            } catch (e: Exception){
+                e.printStackTrace()
+                _state.update {
+                    it.copy(chapContOptions = emptyList())
                 }
             }
         }
@@ -92,7 +110,8 @@ class PostPageViewModel @Inject constructor(
                 contentUris =  state.value.selectedUris)
 
             _state.update {
-                it.copy(isUploading = false,
+                it.copy(
+                    isUploading = false,
                     chapContName = "",
                     chapName = "",
                     selectedUris = emptyList()

@@ -9,5 +9,4 @@ data class Content(
     @SerialName("contentType") val contentType: String,
     @SerialName("name") val title: String,
     @SerialName("authorUsername") val author: String
-
 )
