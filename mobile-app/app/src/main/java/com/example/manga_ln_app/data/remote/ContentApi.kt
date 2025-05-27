@@ -22,7 +22,7 @@ class ContentApi(
     private val client: HttpClient,
     private val credStorage: CredentialsStorage
 ) {
-    private val baseUrl = "http://192.168.1.12:8080"
+    private val baseUrl = "http://192.168.95.90:8080"
 
     suspend fun getContentByType(type: Type): List<Content> {
         try {

@@ -87,7 +87,7 @@ fun ApproveContentPage(
 
             items(
                 items = state.contentsBeta,
-                key = { it.id }
+                key = { it.id.toString() + "a" }
             ) { contentBeta ->
                 ContentsBox(
                     contentType = contentBeta.contentType,
@@ -122,7 +122,7 @@ fun ApproveContentPage(
 
             items(
                 items = state.chaptersBeta,
-                key = { it.id }
+                key = { it.id.toString() + "b" }
             ) { chapter ->
                 ChaptersBox(
                     name = chapter.name,
@@ -156,7 +156,7 @@ fun ApproveContentPage(
 
             items(
                 items = state.commentsBeta,
-                key = { it.id }
+                key = { it.id.toString() + "c" }
             ) { comment ->
                 CommentsBox(
                     author = comment.author,
