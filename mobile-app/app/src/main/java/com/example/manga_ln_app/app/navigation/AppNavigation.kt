@@ -26,7 +26,7 @@ fun AppNavigation(navController: NavHostController) {
             composable<Route.LoginPage> {
                 LoginScreenRoot(
                     onAuthSelf = { role -> navController.navigate(Route.HomePage(role)) },
-                    onError = { navController.navigate(Route.LoginPage) }
+                    onReturn = { navController.navigate(Route.LoginPage) }
                 )
             }
 

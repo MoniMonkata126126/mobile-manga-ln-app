@@ -22,7 +22,7 @@ class ContentApi(
     private val client: HttpClient,
     private val credStorage: CredentialsStorage
 ) {
-    private val baseUrl = "http://192.168.95.90:8080"
+    private val baseUrl = "http://176.12.34.24:80"
 
     suspend fun getContentByType(type: Type): List<Content> {
         try {
@@ -163,6 +163,28 @@ class ContentApi(
             }
         } catch (e: Exception){
             println("Error posting comment: " + e.message)
+        }
+    }
+
+    suspend fun getContentByAuthor(): List<Content> {
+        try {
+            val response = client.get("$baseUrl/user/content/username/${credStorage.getUsername().first()}") {
+                contentType(ContentType.Application.Json)
+                credStorage.getToken().first()?.let {
+                    bearerAuth(it)
+                }
+            }
+
+            return when (response.status) {
+                HttpStatusCode.OK -> {
+                    response.body<List<Content>>()
+                }
+                HttpStatusCode.Unauthorized -> throw Exception("Unauthorized")
+                else -> throw Exception("Server error: ${response.status}")
+            }
+        } catch (e: Exception) {
+            println("Request error: ${e.message}")
+            throw e
         }
     }
 }

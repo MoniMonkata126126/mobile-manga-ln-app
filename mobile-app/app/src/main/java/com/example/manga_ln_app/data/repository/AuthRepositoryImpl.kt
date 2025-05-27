@@ -31,13 +31,10 @@ class AuthRepositoryImpl @Inject constructor(
     override suspend fun register(username: String, password: String): Result<String> {
         return try {
             val response = api.register(username, password)
-            if (response.token.isBlank() || response.token == "null token") {
+            if (response.isBlank()) {
                 Result.failure(Exception("Invalid token received"))
             } else {
-                credStorage.saveUsername(response.username)
-                credStorage.saveRole(response.role)
-                credStorage.saveToken(response.token)
-                Result.success(response.role.name)
+                Result.success(response)
             }
         } catch (e: Exception) {
             println("Register error: ${e.message}")

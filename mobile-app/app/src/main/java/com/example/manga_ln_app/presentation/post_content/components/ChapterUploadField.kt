@@ -3,7 +3,6 @@ package com.example.manga_ln_app.presentation.post_content.components
 import android.net.Uri
 import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -33,18 +32,19 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import com.example.manga_ln_app.domain.model.ListItem
 import com.example.manga_ln_app.domain.model.Type
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ChapterUploadField(
-    contentName: String,
+    contentList: List<ListItem.Content>,
     chapterName: String,
     isUploading: Boolean,
     filePickerLauncher: ManagedActivityResultLauncher<String, List<Uri>>,
-    onContNameChange: (String) -> Unit,
+    selectedUris: List<Uri>,
     onChapNameChange: (String) -> Unit,
-    onChangeDropdownSelect: (Type) -> Unit,
+    onChangeDropdownSelect: (ListItem.Content) -> Unit,
     onButtonClick: () -> Unit,
     onImeDone: () -> Unit,
     modifier: Modifier = Modifier
@@ -54,75 +54,18 @@ fun ChapterUploadField(
         mutableStateOf(false)
     }
 
-    val list = listOf(Type.MANGA, Type.LN)
+    if (contentList.isNotEmpty()) {
 
-    var dropdownText by remember{
-        mutableStateOf(list[0])
-    }
+        var dropdownItem by remember{
+            mutableStateOf(contentList[0])
+        }
 
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 18.dp)
-            .padding(vertical = 20.dp),
-        horizontalAlignment = Alignment.Start
-    ) {
-        OutlinedTextField(
-            value = contentName,
-            onValueChange = onContNameChange,
-            shape = RoundedCornerShape(100),
-            placeholder = {
-                Text(
-                    text = "Content name..."
-                )
-            },
-            keyboardActions = KeyboardActions(
-                onDone = {
-                    onImeDone()
-                }
-            ),
-            keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Text,
-                imeAction = ImeAction.Done
-            ),
-            modifier = modifier
-                .background(
-                    shape = RoundedCornerShape(100),
-                    color = Color.White
-                )
-                .padding(vertical = 8.dp)
-                .minimumInteractiveComponentSize()
-        )
-
-        OutlinedTextField(
-            value = chapterName,
-            onValueChange = onChapNameChange,
-            shape = RoundedCornerShape(100),
-            placeholder = {
-                Text(
-                    text = "Chapter name..."
-                )
-            },
-            keyboardActions = KeyboardActions(
-                onDone = {
-                    onImeDone()
-                }
-            ),
-            keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Text,
-                imeAction = ImeAction.Done
-            ),
-            modifier = modifier
-                .background(
-                    shape = RoundedCornerShape(100),
-                    color = Color.White
-                )
-                .padding(vertical = 8.dp)
-                .minimumInteractiveComponentSize()
-        )
-
-        Row(
-            horizontalArrangement = Arrangement.SpaceAround
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 18.dp)
+                .padding(vertical = 20.dp),
+            horizontalAlignment = Alignment.Start
         ) {
             ExposedDropdownMenuBox(
                 modifier = Modifier
@@ -134,7 +77,7 @@ fun ChapterUploadField(
                 ) {
                 TextField(
                     modifier = Modifier.menuAnchor(),
-                    value = dropdownText.name,
+                    value = dropdownItem.title,
                     onValueChange = {},
                     readOnly = true,
                     trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = isExpanded) }
@@ -143,12 +86,12 @@ fun ChapterUploadField(
                 ExposedDropdownMenu(
                     expanded = isExpanded,
                     onDismissRequest = { isExpanded = false }) {
-                    list.forEachIndexed { index, value ->
+                    contentList.forEachIndexed { index, value ->
                         DropdownMenuItem(
-                            text = { Text(text = value.name) },
+                            text = { Text(text = value.title) },
                             onClick = {
-                                dropdownText = list[index]
-                                onChangeDropdownSelect(dropdownText)
+                                dropdownItem = contentList[index]
+                                onChangeDropdownSelect(dropdownItem)
                                 isExpanded = false
                             },
                             contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding
@@ -156,37 +99,75 @@ fun ChapterUploadField(
                     }
                 }
             }
-            if( !isUploading ){
-                Button(onClick = {
-                    if(dropdownText == Type.MANGA){
-                        filePickerLauncher.launch("image/jpeg")
+
+            OutlinedTextField(
+                value = chapterName,
+                onValueChange = onChapNameChange,
+                shape = RoundedCornerShape(100),
+                placeholder = {
+                    Text(
+                        text = "Chapter name..."
+                    )
+                },
+                keyboardActions = KeyboardActions(
+                    onDone = {
+                        onImeDone()
                     }
-                    else if(dropdownText == Type.LN){
-                        filePickerLauncher.launch("text/plain")
+                ),
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Text,
+                    imeAction = ImeAction.Done
+                ),
+                modifier = modifier
+                    .background(
+                        shape = RoundedCornerShape(100),
+                        color = Color.White
+                    )
+                    .padding(vertical = 8.dp)
+                    .minimumInteractiveComponentSize()
+            )
+
+            if (!isUploading) {
+                Row {
+                    Button(onClick = {
+                        if (dropdownItem.type == Type.MANGA) {
+                            filePickerLauncher.launch("image/jpeg")
+                        } else if (dropdownItem.type == Type.LN) {
+                            filePickerLauncher.launch("text/plain")
+                        }
+                    }) {
+                        Text(text = "Pick files")
                     }
-                }){
-                    Text(text = "Pick files")
+
+                    if(selectedUris.isNotEmpty()){
+                        Text(
+                            text = "Selected files: ${selectedUris.size}",
+                            modifier = Modifier
+                                .wrapContentSize()
+                                .padding(horizontal = 8.dp)
+                                .padding(vertical = 10.dp)
+                        )
+                    }
                 }
             }
 
-        }
-
-        Button(
-            onClick = onButtonClick,
-            modifier = Modifier
-                .wrapContentSize()
-                .padding(4.dp)
-                .padding(vertical = 8.dp),
-            colors = ButtonColors(
-                contentColor = Color.White,
-                disabledContainerColor = Color.Black,
-                disabledContentColor = Color.White,
-                containerColor = Color.Black
-            )
-        ) {
-            Text(
-                text = "Post"
-            )
+            Button(
+                onClick = onButtonClick,
+                modifier = Modifier
+                    .wrapContentSize()
+                    .padding(4.dp)
+                    .padding(vertical = 8.dp),
+                colors = ButtonColors(
+                    contentColor = Color.White,
+                    disabledContainerColor = Color.Black,
+                    disabledContentColor = Color.White,
+                    containerColor = Color.Black
+                )
+            ) {
+                Text(
+                    text = "Post"
+                )
+            }
         }
     }
 }

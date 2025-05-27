@@ -62,7 +62,6 @@ fun PostPage(
     onBackClick: () -> Unit,
     filePickerLauncher: ManagedActivityResultLauncher<String, List<Uri>>,
     onAction: (PostPageAction) -> Unit,
-    modifier: Modifier = Modifier
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
 
@@ -113,12 +112,12 @@ fun PostPage(
             )
 
             ChapterUploadField(
-                contentName = state.chapContName,
+                contentList = state.chapContOptions,
                 chapterName = state.chapName,
                 isUploading = state.isUploading,
                 filePickerLauncher = filePickerLauncher,
+                selectedUris = state.selectedUris,
                 onChapNameChange = { onAction(PostPageAction.OnChapterNameChange(it)) },
-                onContNameChange = { onAction(PostPageAction.OnChapContentNameChange(it)) },
                 onChangeDropdownSelect = { onAction(PostPageAction.OnSelectedDropdownTwoChange(it)) },
                 onButtonClick = { onAction(PostPageAction.OnPostButtonTwoClick) },
                 onImeDone = {

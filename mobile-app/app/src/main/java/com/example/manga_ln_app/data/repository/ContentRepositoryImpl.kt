@@ -94,4 +94,20 @@ class ContentRepositoryImpl @Inject constructor(
         contentApi.approveContent(id)
     }
 
+    override suspend fun getContentByAuthor(): List<ListItem.Content> {
+        try{
+            val response = contentApi.getContentByAuthor().map { dto ->
+                ListItem.Content(
+                    id = dto.id,
+                    title = dto.title,
+                    author = dto.author,
+                    type = Type.valueOf(dto.contentType)
+                )
+            }
+            return response
+        } catch (e: Exception) {
+            return emptyList()
+        }
+    }
+
 }

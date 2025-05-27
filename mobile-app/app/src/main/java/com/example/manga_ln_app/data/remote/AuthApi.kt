@@ -9,7 +9,7 @@ import io.ktor.client.request.*
 import io.ktor.http.*
 
 class AuthApi(private val client: HttpClient) {
-    private val baseUrl = "http://192.168.95.90:8080"
+    private val baseUrl = "http://176.12.34.24:80"
 
     suspend fun login(username: String, password: String): AuthResponse {
         try {
@@ -38,7 +38,7 @@ class AuthApi(private val client: HttpClient) {
         }
     }
 
-    suspend fun register(username: String, password: String): AuthResponse {
+    suspend fun register(username: String, password: String): String {
         try {
             val response = client.post("$baseUrl/user/register") {
                 contentType(ContentType.Application.Json)
@@ -47,12 +47,7 @@ class AuthApi(private val client: HttpClient) {
             
             when (response.status) {
                 HttpStatusCode.OK -> {
-                    val parsedResponse = response.body<Map<String, String>>()
-                    return AuthResponse(
-                        username = parsedResponse["username"] ?: throw IllegalStateException("No username in response"),
-                        role = Role.entries.find { it.name == parsedResponse["role"] } ?: throw IllegalStateException("No role in response"),
-                        token = parsedResponse["token"] ?: throw IllegalStateException("No token in response")
-                    )
+                    return response.body()
                 }
                 HttpStatusCode.Conflict -> throw Exception("Username already exists")
                 else -> throw Exception("Server error: ${response.status}")
