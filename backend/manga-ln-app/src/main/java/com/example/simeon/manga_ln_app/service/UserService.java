@@ -106,6 +106,7 @@ public class UserService {
         User user = userRepository.findByUsername(username).orElseThrow(
                 () -> new IllegalArgumentException( "User with username: " + username + " not found!" )
         );
-        return user.getCreatedWorks();
+        List<Content> contentList = user.getCreatedWorks();
+        return contentList;
     }
 }
